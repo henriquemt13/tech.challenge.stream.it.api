@@ -3,18 +3,24 @@ package com.tech.challenge.service;
 import com.tech.challenge.dto.CreateVideoDTO;
 import com.tech.challenge.model.Video;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface VideoService {
 
-    Video uploadVideo(CreateVideoDTO createVideoDTO);
+    Video upload(CreateVideoDTO createVideoDTO) throws IOException;
 
-    Video updateVideo(Video video);
+    Video update(Video video);
 
-    void deleteVideo(Long id, Long userId);
+    void delete(Long id, Long userId);
 
-    Video findById(Long id);
+    Optional<Video> findById(Long id);
+
+    List<Video> findByIdIn(List<Long> ids);
 
     List<Video> findByVideoNameLike(String name);
+
+    List<Video> findRecommendedVideosByUserId(Long userId);
 
 }
