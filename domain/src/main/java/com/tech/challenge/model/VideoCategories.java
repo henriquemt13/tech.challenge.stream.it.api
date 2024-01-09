@@ -5,9 +5,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class User {
+public class VideoCategories {
 
     private Long id;
-    private String username;
+    private Long videoId;
+    private Long categoryId;
     private LocalDateTime createdAt;
 }

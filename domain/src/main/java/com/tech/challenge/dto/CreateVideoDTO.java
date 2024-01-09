@@ -10,5 +10,7 @@ public class CreateVideoDTO {
 
     private MultipartFile video;
     private List<String> categories;
+    private String videoName;
+    private String videoDescription;
     private Long userId;
 }
