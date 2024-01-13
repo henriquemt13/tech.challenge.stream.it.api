@@ -1,12 +1,15 @@
 package com.tech.challenge.persistence;
 
 import com.tech.challenge.model.User;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
 public interface UserPersistence {
 
-    User create(User user);
+    User save(User user);
 
     Optional<User> findById(Long id);
+
+    Optional<User> findByUsername(String username);
 }

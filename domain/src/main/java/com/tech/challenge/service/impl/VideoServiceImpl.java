@@ -8,11 +8,12 @@ import com.tech.challenge.persistence.VideoPersistence;
 import com.tech.challenge.service.VideoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -21,45 +22,50 @@ public class VideoServiceImpl implements VideoService {
     private VideoPersistence persistence;
 
     @Override
-    public Video upload(CreateVideoDTO createVideoDTO) throws IOException {
-        return persistence.save(new Video(createVideoDTO));
-    }
-
-    @Override
-    public Video update(Video video) {
-        return persistence.update(video);
+    public Mono<Video> upload(CreateVideoDTO createVideoDTO) throws IOException {
+        return persistence.save(new Video(createVideoDTO), createVideoDTO.getVideo());
     }
 
     @Override
     public void delete(Long id, Long userId) {
-        findById(id).ifPresentOrElse(video -> {
-            if (Objects.equals(video.getUploaderUserId(), userId)) {
-                persistence.deleteVideo(id);
-            } else {
-                throw new BadRequestException(String.format("User ID %d is not the Video ID %d owner", userId, id));
+        findById(id).subscribe(video -> {
+            try {
+                deleteVideo(video, userId);
+            } catch (IOException e) {
+                throw new BadRequestException(String
+                        .format("There was an error while trying to delete Video ID %d", id));
             }
-        }, () -> {
+        }, error -> {
             throw new NotFoundException(String.format("Video ID %d not found", id));
         });
     }
 
+    private void deleteVideo(Video video, Long userId) throws IOException {
+        if (Objects.equals(video.getUploaderUserId(), userId)) {
+            persistence.delete(video);
+        } else {
+            throw new BadRequestException(String
+                    .format("User ID %d is not the Video ID %d owner", userId, video.getId()));
+        }
+    }
+
     @Override
-    public Optional<Video> findById(Long id) {
+    public Mono<Video> findById(Long id) {
         return persistence.findById(id);
     }
 
     @Override
-    public List<Video> findByIdIn(List<Long> ids) {
+    public Flux<Video> findByIdIn(List<Long> ids) {
         return persistence.findByIdIn(ids);
     }
 
     @Override
-    public List<Video> findByVideoNameLike(String name) {
+    public Flux<Video> findByVideoNameLike(String name) {
         return persistence.findByVideoNameLike(name);
     }
 
     @Override
-    public List<Video> findRecommendedVideosByUserId(Long userId) {
+    public Flux<Video> findRecommendedVideosByUserId(Long userId) {
         return persistence.findRecommendedVideosByUserId(userId);
     }
 }

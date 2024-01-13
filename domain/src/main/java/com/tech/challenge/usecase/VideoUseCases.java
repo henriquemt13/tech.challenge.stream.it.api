@@ -1,13 +1,22 @@
 package com.tech.challenge.usecase;
 
-import com.tech.challenge.model.*;
-import com.tech.challenge.service.*;
+import com.tech.challenge.dto.CreateVideoDTO;
+import com.tech.challenge.model.Like;
+import com.tech.challenge.model.LikeOptionEnum;
+import com.tech.challenge.model.Video;
+import com.tech.challenge.model.ViewingHistory;
+import com.tech.challenge.service.LikeService;
+import com.tech.challenge.service.VideoService;
+import com.tech.challenge.service.ViewingHistoryService;
+import com.tech.challenge.storage.VideoStorage;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 @Component
 @AllArgsConstructor
@@ -15,68 +24,48 @@ public class VideoUseCases {
 
     private LikeService likeService;
     private VideoService videoService;
-    private VideoCategoriesService videoCategoriesService;
-    private UserCategoriesService userCategoriesService;
     private ViewingHistoryService viewingHistoryService;
+    private VideoStorage storage;
 
-
-    public List<Video> findRecommendedVideosByUserId(Long userId) {
-        List<Video> recommendedVideos = searchRecommendedVideos(searchRecommendedCategoriesIdsByUserId(userId));
-        removeViewedVideos(searchViewedVideosHistoryIdsByUserId(userId), recommendedVideos);
-        recommendedVideos.sort(Comparator.comparing(Video::getUploadDate));
-        return recommendedVideos;
+    public Mono<Video> uploadVideo(CreateVideoDTO createVideoDTO) throws IOException {
+        return videoService.upload(createVideoDTO);
     }
 
-    public List<Video> searchRecommendedVideos(List<Long> likedCategoriesIds) {
-        return videoService.findByIdIn(videoCategoriesService
-                .findByCategoryIdIn(likedCategoriesIds).stream().map(VideoCategories::getCategoryId).toList());
+    public Mono<Resource> streamVideo(String videoPath) throws MalformedURLException {
+        return storage.streamVideo(videoPath);
     }
 
-    public List<Long> searchRecommendedCategoriesIdsByUserId(Long userId) {
-        List<Long> likedCategories = new ArrayList<>(userCategoriesService
-                .findByUserIdAndLikeOption(userId, LikeOptionEnum.LIKE)
-                .stream().map(UserCategories::getCategoryId).toList());
-
-        likedCategories.addAll(searchLastLikedVideoCategoriesIdsByUserId(userId));
-        return likedCategories.stream().distinct().toList();
+    public void deleteVideo(Long videoId, Long userId) {
+        videoService.delete(videoId, userId);
     }
 
-    public List<Long> searchLastLikedVideoCategoriesIdsByUserId(Long userId) {
-        List<Like> likedVideos = likeService.findByUserId(userId);
-        likedVideos.sort(Comparator.comparing(Like::getCreatedAt));
-        return videoCategoriesService
-                .findByVideoId(likedVideos.get(0).getVideoId())
-                .stream().map(VideoCategories::getCategoryId).toList();
+    public Flux<Video> findByVideoNameLike(String videoName) {
+        return videoService.findByVideoNameLike(videoName);
     }
 
-    private List<Long> searchViewedVideosHistoryIdsByUserId(Long userId) {
-        return viewingHistoryService
-                .findByUserId(userId).stream().map(ViewingHistory:: getVideoId).toList();
+    public void likeVideo(Long videoId, Long userId) {
+        likeService.likeVideo(videoId, userId);
     }
 
-    public void removeViewedVideos(List<Long> viewedVideosIds, List<Video> recommendedVideos) {
-        for (Long viewedVideoId: viewedVideosIds) {
-            recommendedVideos.removeIf( r-> r.getId().equals(viewedVideoId));
-        }
+    public void dislikeVideo(Long videoId, Long userId) {
+        likeService.dislikeVideo(videoId, userId);
     }
 
-    public List<Video> findLikedVideosByUserId(Long userId) {
-        List<Like> likes = likeService.findByUserId(userId);
-        return new ArrayList<>(videoService.findByIdIn(likes.stream()
-                .filter(l -> l.getLikeOption().equals(LikeOptionEnum.LIKE))
-                .map(Like::getVideoId).toList()));
+    public Mono<Video> findDetailsById(Long id) {
+        return videoService.findById(id);
     }
 
-    public List<Video> findDislikedVideosByUserId(Long userId) {
-        List<Like> likes = likeService.findByUserId(userId);
-        return new ArrayList<>(videoService.findByIdIn(likes.stream()
-                .filter(l -> l.getLikeOption().equals(LikeOptionEnum.DISLIKE))
-                .map(Like::getVideoId).toList()));
+    public Flux<Video> findUserInteractedVideos(Long userId, LikeOptionEnum likeOption) {
+        return videoService.findByIdIn(likeService.findByUserIdAndLikeOption(userId, likeOption).stream()
+                .map(Like::getVideoId).toList());
     }
 
-
-    public Video findMostLikedVideo() {
-        return new Video();
+    public Flux<Video> findLastViewedVideos(Long userId) {
+        return videoService.findByIdIn(viewingHistoryService
+                .findByUserId(userId).stream().map(ViewingHistory::getVideoId).toList());
     }
 
+    public Flux<Video> findRecommendedVideos(Long userId) {
+        return videoService.findRecommendedVideosByUserId(userId);
+    }
 }

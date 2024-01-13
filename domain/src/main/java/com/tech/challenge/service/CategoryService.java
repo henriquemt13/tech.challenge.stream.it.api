@@ -1,7 +1,6 @@
 package com.tech.challenge.service;
 
 import com.tech.challenge.model.Category;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -13,8 +12,8 @@ public interface CategoryService {
 
     Optional<Category> findById(Long id);
 
-    List<Category> findByVideoId(Long videoId);
+    List<Category> findByIdIn(List<Long> ids);
 
-    List<Category> findDistinctByVideoIdIn(List<Long> videoIds);
+    List<Category> findByVideoId(Long videoId);
 
 }

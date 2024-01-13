@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserCategoryPersistence {
 
+    UserCategories save(UserCategories userCategories);
+
     List<UserCategories> findByUserId(Long userId);
 
     List<UserCategories> findByUserIdAndLikeOption(Long userId, LikeOptionEnum likeOptionEnum);

@@ -1,23 +1,24 @@
 package com.tech.challenge.persistence;
 
 import com.tech.challenge.model.Video;
+import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public interface VideoPersistence {
 
-    Video save(Video video);
+    Mono<Video> save(Video video, MultipartFile videoFile) throws IOException;
 
-    Video update(Video video);
+    void delete(Video video) throws IOException;
 
-    void deleteVideo(Long id);
+    Mono<Video> findById(Long id);
 
-    Optional<Video> findById(Long id);
+    Flux<Video> findByIdIn(List<Long> ids);
 
-    List<Video> findByIdIn(List<Long> ids);
+    Flux<Video> findByVideoNameLike(String name);
 
-    List<Video> findByVideoNameLike(String name);
-
-    List<Video> findRecommendedVideosByUserId(Long userId);
+    Flux<Video> findRecommendedVideosByUserId(Long userId);
 }

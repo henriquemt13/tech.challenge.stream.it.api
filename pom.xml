@@ -29,6 +29,7 @@
         <javax.json.api.version>1.1.4</javax.json.api.version>
         <lombok.version>1.18.28</lombok.version>
         <spring.base.version>3.1.2</spring.base.version>
+        <reactor.version>3.6.1</reactor.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -109,7 +110,11 @@
                 <artifactId>spring-boot-starter-amqp</artifactId>
                 <version>${spring-amqp.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-core</artifactId>
+                <version>${reactor.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
@@ -117,6 +122,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>

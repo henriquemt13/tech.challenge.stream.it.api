@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserCategoriesService {
 
+    UserCategories save(Long userId, Long categoryId);
+
     List<UserCategories> findByUserId(Long userId);
 
     List<UserCategories> findByUserIdAndLikeOption(Long userId, LikeOptionEnum likeOptionEnum);

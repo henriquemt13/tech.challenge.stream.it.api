@@ -15,12 +15,17 @@ public class UserServiceImpl implements UserService {
     private UserPersistence persistence;
 
     @Override
-    public User create(User user) {
-        return persistence.create(user);
+    public User save(User user) {
+        return persistence.save(user);
     }
 
     @Override
     public Optional<User> findById(Long id) {
         return persistence.findById(id);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return persistence.findByUsername(username);
     }
 }

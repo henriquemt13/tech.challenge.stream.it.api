@@ -3,7 +3,6 @@ package com.tech.challenge.service.impl;
 import com.tech.challenge.model.VideoCategories;
 import com.tech.challenge.persistence.VideoCategoriesPersistence;
 import com.tech.challenge.service.VideoCategoriesService;
-
 import java.util.List;
 
 public class VideoCategoriesServiceImpl implements VideoCategoriesService {

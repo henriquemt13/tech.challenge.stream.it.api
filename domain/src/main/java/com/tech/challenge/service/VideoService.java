@@ -2,6 +2,8 @@ package com.tech.challenge.service;
 
 import com.tech.challenge.dto.CreateVideoDTO;
 import com.tech.challenge.model.Video;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,18 +11,16 @@ import java.util.Optional;
 
 public interface VideoService {
 
-    Video upload(CreateVideoDTO createVideoDTO) throws IOException;
-
-    Video update(Video video);
+    Mono<Video> upload(CreateVideoDTO createVideoDTO) throws IOException;
 
     void delete(Long id, Long userId);
 
-    Optional<Video> findById(Long id);
+    Mono<Video> findById(Long id);
 
-    List<Video> findByIdIn(List<Long> ids);
+    Flux<Video> findByIdIn(List<Long> ids);
 
-    List<Video> findByVideoNameLike(String name);
+    Flux<Video> findByVideoNameLike(String name);
 
-    List<Video> findRecommendedVideosByUserId(Long userId);
+    Flux<Video> findRecommendedVideosByUserId(Long userId);
 
 }

@@ -1,7 +1,15 @@
 package com.tech.challenge.repository;
 
 import com.tech.challenge.entity.LikeEntity;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import com.tech.challenge.model.Like;
+import com.tech.challenge.model.LikeOptionEnum;
+import org.springframework.data.repository.CrudRepository;
 
-public interface LikeRepository extends ReactiveCrudRepository<LikeEntity, Long> {
+import java.util.List;
+
+public interface LikeRepository extends CrudRepository<LikeEntity, Long> {
+
+    List<LikeEntity> findByUserId(Long userId);
+
+    List<Like> findByUserIdAndLikeOption(Long userId, LikeOptionEnum likeOption)
 }

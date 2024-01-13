@@ -1,7 +1,6 @@
 package com.tech.challenge.service;
 
 import com.tech.challenge.model.VideoCategories;
-
 import java.util.List;
 
 public interface VideoCategoriesService {

@@ -38,4 +38,9 @@ public class LikeEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    public LikeEntity(Long videoId, Long userId, LikeOptionEnum likeOption) {
+        this.videoId = videoId;
+        this.userId = userId;
+        this.likeOption = likeOption;
+    }
 }

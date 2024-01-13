@@ -1,7 +1,14 @@
 package com.tech.challenge.repository;
 
 import com.tech.challenge.entity.CategoryEntity;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import com.tech.challenge.model.Category;
+import org.springframework.data.repository.CrudRepository;
 
-public interface CategoryRepository extends ReactiveCrudRepository<CategoryEntity, Long> {
+import java.util.List;
+
+public interface CategoryRepository extends CrudRepository<CategoryEntity, Long> {
+
+    List<Category> findByIdIn(List<Long> ids);
+    List<CategoryEntity> findByVideoId(Long videoId);
+
 }
