@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "like")
+@Table(name = "like_table")
 public class LikeEntity {
 
     @Id
-    @SequenceGenerator(name = "like_seq",
-            sequenceName = "like_seq", allocationSize = 1)
-    @GeneratedValue(generator = "like_seq")
+    @SequenceGenerator(name = "like_table_seq",
+            sequenceName = "like_table_seq", allocationSize = 1)
+    @GeneratedValue(generator = "like_table_seq")
     @Column(name = "id", unique = true)
     private Long id;
     @Column(name = "video_id", unique = true)

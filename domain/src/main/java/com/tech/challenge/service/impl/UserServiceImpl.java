@@ -1,5 +1,6 @@
 package com.tech.challenge.service.impl;
 
+import com.tech.challenge.exception.BadRequestException;
 import com.tech.challenge.model.User;
 import com.tech.challenge.persistence.UserPersistence;
 import com.tech.challenge.service.UserService;
@@ -16,6 +17,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
+        var usernameOpt = findByUsername(user.getUsername());
+        usernameOpt.ifPresent(existentUser -> {
+            throw new BadRequestException(String.format("User named [%s] already exists", user.getUsername()));
+        });
         return persistence.save(user);
     }
 

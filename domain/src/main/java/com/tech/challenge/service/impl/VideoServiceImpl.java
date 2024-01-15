@@ -5,6 +5,7 @@ import com.tech.challenge.exception.BadRequestException;
 import com.tech.challenge.exception.NotFoundException;
 import com.tech.challenge.model.Video;
 import com.tech.challenge.persistence.VideoPersistence;
+import com.tech.challenge.service.VideoCategoriesService;
 import com.tech.challenge.service.VideoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,23 +21,34 @@ import java.util.Objects;
 public class VideoServiceImpl implements VideoService {
 
     private VideoPersistence persistence;
+    private VideoCategoriesService videoCategoriesService;
 
     @Override
     public Mono<Video> upload(CreateVideoDTO createVideoDTO) throws IOException {
-        return persistence.save(new Video(createVideoDTO), createVideoDTO.getVideo());
+        var video = persistence.save(new Video(createVideoDTO), createVideoDTO.getVideo());
+        video.subscribe(v -> videoCategoriesService.save(v.getId(), createVideoDTO.getCategoryIds()));
+        return video;
     }
 
     @Override
     public void delete(Long id, Long userId) {
-        findById(id).subscribe(video -> {
+        var existentVideo = findById(id);
+        validateDelete(existentVideo, id);
+        existentVideo.subscribe(video -> {
             try {
                 deleteVideo(video, userId);
             } catch (IOException e) {
                 throw new BadRequestException(String
                         .format("There was an error while trying to delete Video ID %d", id));
             }
-        }, error -> {
-            throw new NotFoundException(String.format("Video ID %d not found", id));
+        });
+    }
+
+    private void validateDelete(Mono<Video> existentVideo, Long id) {
+        existentVideo.hasElement().subscribe(ev -> {
+            if (Boolean.FALSE.equals(ev)) {
+                throw new NotFoundException(String.format("Video ID %d not found", id));
+            }
         });
     }
 

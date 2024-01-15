@@ -9,7 +9,7 @@ import java.util.List;
 public class CreateVideoDTO {
 
     private MultipartFile video;
-    private List<String> categories;
+    private List<Long> categoryIds;
     private String videoName;
     private String videoDescription;
     private Long userId;

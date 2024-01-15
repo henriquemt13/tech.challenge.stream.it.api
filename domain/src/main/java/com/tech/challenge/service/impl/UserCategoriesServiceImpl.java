@@ -1,24 +1,30 @@
 package com.tech.challenge.service.impl;
 
+import com.tech.challenge.exception.BadRequestException;
 import com.tech.challenge.model.LikeOptionEnum;
 import com.tech.challenge.model.UserCategories;
-import com.tech.challenge.persistence.UserCategoryPersistence;
+import com.tech.challenge.persistence.UserCategoriesPersistence;
 import com.tech.challenge.service.UserCategoriesService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
 public class UserCategoriesServiceImpl implements UserCategoriesService {
 
-    private UserCategoryPersistence persistence;
+    private UserCategoriesPersistence persistence;
 
     @Override
     public UserCategories save(Long userId, Long categoryId) {
+        findByUserId(userId).forEach(uc -> {
+            if (Objects.equals(uc.getCategoryId(), categoryId)) {
+                throw new BadRequestException(String.format("User ID %d has already liked Category ID %d",
+                        userId, categoryId));
+            }
+        });
         UserCategories userCategories = new UserCategories(userId, categoryId);
         return persistence.save(userCategories);
     }

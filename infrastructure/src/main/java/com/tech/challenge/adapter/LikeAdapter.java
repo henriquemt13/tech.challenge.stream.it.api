@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @AllArgsConstructor
@@ -38,5 +39,15 @@ public class LikeAdapter implements LikePersistence {
     @Override
     public List<Like> findByUserIdAndLikeOption(Long userId, LikeOptionEnum likeOption) {
         return repository.findByUserIdAndLikeOption(userId, likeOption);
+    }
+
+    @Override
+    public Optional<Like> findByUserIdAndVideoId(Long userId, Long videoId) {
+        return repository.findByUserIdAndVideoId(userId, videoId);
+    }
+
+    @Override
+    public void delete(Like like) {
+        repository.delete(mapper.toEntity(like));
     }
 }

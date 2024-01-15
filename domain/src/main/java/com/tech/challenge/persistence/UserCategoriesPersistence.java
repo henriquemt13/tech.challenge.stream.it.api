@@ -5,7 +5,7 @@ import com.tech.challenge.model.UserCategories;
 
 import java.util.List;
 
-public interface UserCategoryPersistence {
+public interface UserCategoriesPersistence {
 
     UserCategories save(UserCategories userCategories);
 

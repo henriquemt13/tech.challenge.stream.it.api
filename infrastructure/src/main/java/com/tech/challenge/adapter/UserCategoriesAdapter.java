@@ -3,7 +3,7 @@ package com.tech.challenge.adapter;
 import com.tech.challenge.mapper.UserCategoriesEntityMapper;
 import com.tech.challenge.model.LikeOptionEnum;
 import com.tech.challenge.model.UserCategories;
-import com.tech.challenge.persistence.UserCategoryPersistence;
+import com.tech.challenge.persistence.UserCategoriesPersistence;
 import com.tech.challenge.repository.UserCategoriesRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class UserCategoryAdapter implements UserCategoryPersistence {
+public class UserCategoriesAdapter implements UserCategoriesPersistence {
 
     private UserCategoriesRepository repository;
     private UserCategoriesEntityMapper mapper;
