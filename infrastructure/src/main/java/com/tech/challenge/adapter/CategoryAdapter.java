@@ -16,8 +16,9 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CategoryAdapter implements CategoryPersistence {
 
-    private CategoryRepository repository;
-    private CategoryEntityMapper mapper;
+    private final CategoryRepository repository;
+    private final CategoryEntityMapper mapper;
+
     @Override
     public List<Category> findAll() {
         List<CategoryEntity> categories = new ArrayList<>();
@@ -27,17 +28,12 @@ public class CategoryAdapter implements CategoryPersistence {
 
     @Override
     public Optional<Category> findById(Long id) {
-        return mapper.toDomain(repository.findById(id));
+        return repository.findById(id).map(mapper::toDomain);
     }
 
     @Override
     public List<Category> findByIdIn(List<Long> ids) {
-        return repository.findByIdIn(ids);
-    }
-
-    @Override
-    public List<Category> findByVideoId(Long videoId) {
-        return mapper.toDomain(repository.findByVideoId(videoId));
+        return mapper.toDomain(repository.findByIdIn(ids));
     }
 
 }

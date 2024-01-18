@@ -13,14 +13,16 @@ import java.util.List;
 @AllArgsConstructor
 public class VideoCategoriesServiceImpl implements VideoCategoriesService {
 
-    private VideoCategoriesPersistence persistence;
+    private final VideoCategoriesPersistence persistence;
 
     @Override
     public void save(Long videoId, List<Long> categoriesId) {
         if (!findByVideoId(videoId).isEmpty()) {
             throw new BadRequestException(String.format("Categories already added to Video ID %d", videoId));
         }
-        persistence.save(videoId, categoriesId);
+        for (Long categoryId : categoriesId) {
+            persistence.save(new VideoCategories(videoId, categoryId));
+        }
     }
 
     @Override

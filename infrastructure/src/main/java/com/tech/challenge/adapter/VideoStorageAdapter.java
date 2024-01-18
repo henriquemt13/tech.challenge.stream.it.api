@@ -1,10 +1,11 @@
 package com.tech.challenge.adapter;
 
+import com.tech.challenge.model.Video;
 import com.tech.challenge.storage.VideoStorage;
-import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
@@ -13,24 +14,36 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
 public class VideoStorageAdapter implements VideoStorage {
 
-    private static String UPLOAD_DIRECTORY = System.getProperty("user.home");
+    private static final String UPLOAD_DIRECTORY = System.getProperty("user.home");
 
     @Override
-    public Mono<String> uploadVideo(Long userId, MultipartFile videoFile) throws IOException {
-        String filename = UUID.randomUUID() + "-" + userId.toString() + "-" + videoFile.getOriginalFilename();
+    public String uploadVideo(Video video, MultipartFile videoFile) throws IOException {
+        var filename = generateFileName(video, videoFile);
         Path filePath = Paths.get(UPLOAD_DIRECTORY).resolve(filename);
         videoFile.transferTo(filePath.toFile());
-        return Mono.just(filename);
+        return filename;
+    }
+
+    private String generateFileName(Video video, MultipartFile videoFile) {
+        var fileName = video.getVideoName();
+        var fileExtension = StringUtils.getFilenameExtension(videoFile.getOriginalFilename());
+        return String.format("%s.%s", Base64.getEncoder()
+                .encodeToString(Objects.requireNonNull(fileName).getBytes()), fileExtension);
     }
 
     @Override
     public Mono<Resource> streamVideo(String videoPath) throws MalformedURLException {
-        return Mono.just(new UrlResource(Paths.get(videoPath).toUri()));
+        String videoPathWithoutExtension = videoPath.substring(0, videoPath.length()-4);
+        String extension = videoPath.substring(videoPath.length()-3);
+        return Mono.just(new UrlResource(Paths.get(String.format("%s/%s.%s", UPLOAD_DIRECTORY,
+                        videoPathWithoutExtension, extension)).toUri()));
     }
 
     @Override

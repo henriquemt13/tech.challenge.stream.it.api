@@ -9,5 +9,4 @@ public interface UserCategoriesRepository extends CrudRepository<UserCategoriesE
 
     List<UserCategoriesEntity> findByUserId(Long userId);
 
-    List<UserCategoriesEntity> findByUserIdAndLikeOption(Long userId, String likeOption);
 }

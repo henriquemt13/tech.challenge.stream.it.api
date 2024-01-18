@@ -12,7 +12,7 @@ public interface LikeRepository extends CrudRepository<LikeEntity, Long> {
 
     List<LikeEntity> findByUserId(Long userId);
 
-    List<Like> findByUserIdAndLikeOption(Long userId, LikeOptionEnum likeOption);
+    List<LikeEntity> findByUserIdAndLikeOption(Long userId, String likeOption);
 
-    Optional<Like> findByUserIdAndVideoId(Long userId, Long videoId);
+    Optional<LikeEntity> findByUserIdAndVideoId(Long userId, Long videoId);
 }

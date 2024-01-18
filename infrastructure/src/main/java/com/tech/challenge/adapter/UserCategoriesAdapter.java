@@ -6,16 +6,17 @@ import com.tech.challenge.model.UserCategories;
 import com.tech.challenge.persistence.UserCategoriesPersistence;
 import com.tech.challenge.repository.UserCategoriesRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserCategoriesAdapter implements UserCategoriesPersistence {
 
-    private UserCategoriesRepository repository;
-    private UserCategoriesEntityMapper mapper;
+    private final UserCategoriesRepository repository;
+    private final UserCategoriesEntityMapper mapper;
 
     @Override
     public UserCategories save(UserCategories userCategories) {
@@ -27,8 +28,4 @@ public class UserCategoriesAdapter implements UserCategoriesPersistence {
         return mapper.toDomain(repository.findByUserId(userId));
     }
 
-    @Override
-    public List<UserCategories> findByUserIdAndLikeOption(Long userId, LikeOptionEnum likeOptionEnum) {
-        return mapper.toDomain(repository.findByUserIdAndLikeOption(userId, likeOptionEnum.name()));
-    }
 }

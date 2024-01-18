@@ -2,26 +2,43 @@ package com.tech.challenge.repository;
 
 import com.tech.challenge.entity.VideoEntity;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import reactor.core.publisher.Flux;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface VideoRepository extends ReactiveCrudRepository<VideoEntity, Long> {
+public interface VideoRepository extends CrudRepository<VideoEntity, Long> {
 
-    Flux<VideoEntity> findByIdIn(List<Long> ids);
+    List<VideoEntity> findByIdIn(List<Long> ids);
 
-    Flux<VideoEntity> findByVideoNameLike(String name);
+    List<VideoEntity> findByVideoNameLike(String name);
 
-    @Query("SELECT DISTINCT v FROM Video v " +
-            "JOIN v.categories c " +
-            "WHERE c.id IN " +
-            "(SELECT DISTINCT uc.categoryId FROM UserCategory uc WHERE uc.userId = :userId AND uc.likeOption = 'LIKE' " +
-            "UNION " +
-            "SELECT DISTINCT vc.categoryId FROM VideoCategories vc " +
-            "WHERE vc.videoId IN (SELECT l.videoId FROM Like l WHERE l.userId = :userId) " +
-            "ORDER BY (SELECT MAX(l.createdAt) FROM Like l WHERE l.videoId = v.id) DESC) " +
-            "AND v.id NOT IN (SELECT vh.videoId FROM ViewingHistory vh WHERE vh.userId = :userId) " +
-            "ORDER BY v.uploadDate ASC")
-    Flux<VideoEntity> findRecommendedVideosByUserId(Long userId);
+    @Query(value = "SELECT DISTINCT v.* " +
+            "FROM video v  " +
+            "JOIN video_categories vc ON vc.video_id = v.id  " +
+            "WHERE vc.category_id IN (  " +
+            "    SELECT DISTINCT uc.category_id " +
+            "    FROM user_categories uc  " +
+            "    WHERE uc.user_id = :userId  " +
+            "" +
+            "    UNION  " +
+            "" +
+            "    SELECT DISTINCT vcu.category_id " +
+            "    FROM video_categories vcu  " +
+            "    WHERE vcu.video_id IN (  " +
+            "        SELECT l.video_id " +
+            "        FROM like_table l  " +
+            "        WHERE l.user_id = :userId" +
+            "    )  " +
+            ")  " +
+            "AND v.id NOT IN (" +
+            "    SELECT vh.video_id " +
+            "    FROM viewing_history vh " +
+            "    WHERE vh.user_id = :userId" +
+            ")  " +
+            "ORDER BY v.created_at DESC;", nativeQuery = true)
+    List<VideoEntity> findRecommendedVideosByUserId(Long userId);
+
+
+    Optional<VideoEntity> findByVideoPath(String videoPath);
 }

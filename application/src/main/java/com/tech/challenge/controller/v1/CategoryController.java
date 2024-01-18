@@ -23,10 +23,10 @@ import java.util.List;
 @Tag(name = "Category")
 public class CategoryController {
 
-    private CategoryMapper mapper;
-    private CategoryUseCases categoryUseCases;
+    private final CategoryMapper mapper;
+    private final CategoryUseCases categoryUseCases;
 
-    @GetMapping("/")
+    @GetMapping
     @ApiResponse(description = "Find All Categories", responseCode = "200")
     @Operation(summary = "Find All")
     public ResponseEntity<List<CategoryResponseDTO>> findAll() {
@@ -36,22 +36,22 @@ public class CategoryController {
     @GetMapping("/video/{id}")
     @ApiResponse(description = "Find Categories By VideoId", responseCode = "200")
     @Operation(summary = "Find All")
-    public ResponseEntity<List<CategoryResponseDTO>> findByVideoId(@Valid @PathVariable Long videoId) {
+    public ResponseEntity<List<CategoryResponseDTO>> findByVideoId(@Valid @PathVariable("id") Long videoId) {
         return ResponseEntity.ok(mapper.toResponse(categoryUseCases.findByVideoId(videoId)));
     }
 
     @GetMapping("/user/{id}/like-categories")
     @ApiResponse(description = "Find Liked Categories by User Id", responseCode = "200")
     @Operation(summary = "Get User by UserId")
-    public ResponseEntity<List<CategoryResponseDTO>> findLikedCategories(@Valid @PathVariable Long userId) {
+    public ResponseEntity<List<CategoryResponseDTO>> findLikedCategories(@Valid @PathVariable("id") Long userId) {
         return ResponseEntity.ok(mapper.toResponse(categoryUseCases.findUserLikedCategories(userId)));
     }
 
     @PostMapping("/user/{id}/like-categories")
     @ApiResponse(description = "Save User", responseCode = "200")
     @Operation(summary = "Get User by UserId")
-    public ResponseEntity<Void> likeCategories(@Valid @PathVariable Long userId,
-                                               @Valid @ParameterObject List<Long> categoriesIds) {
+    public ResponseEntity<Void> likeCategories(@Valid @PathVariable("id") Long userId,
+                                               @Valid @RequestBody List<Long> categoriesIds) {
         categoryUseCases.likeCategories(userId, categoriesIds);
         return ResponseEntity.ok().build();
     }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface VideoCategoriesPersistence {
 
-    void save(Long videoId, List<Long> categoriesId);
+    void save(VideoCategories videoCategories);
 
     List<VideoCategories> findByVideoId(Long videoId);
 

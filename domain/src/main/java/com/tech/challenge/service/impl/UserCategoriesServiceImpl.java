@@ -15,7 +15,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class UserCategoriesServiceImpl implements UserCategoriesService {
 
-    private UserCategoriesPersistence persistence;
+    private final UserCategoriesPersistence persistence;
 
     @Override
     public UserCategories save(Long userId, Long categoryId) {
@@ -34,8 +34,4 @@ public class UserCategoriesServiceImpl implements UserCategoriesService {
         return persistence.findByUserId(userId);
     }
 
-    @Override
-    public List<UserCategories> findByUserIdAndLikeOption(Long userId, LikeOptionEnum likeOptionEnum) {
-        return persistence.findByUserIdAndLikeOption(userId, likeOptionEnum);
-    }
 }

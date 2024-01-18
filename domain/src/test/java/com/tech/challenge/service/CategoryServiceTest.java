@@ -85,15 +85,4 @@ class CategoryServiceTest {
         assertEquals(List.of(CategoryFixture.newCategory()), result);
     }
 
-    @Test
-    void findByVideoIdRunAsExpected() {
-        when(persistence.findByVideoId(anyLong()))
-                .thenReturn(List.of(CategoryFixture.newCategory()));
-
-        var result = service.findByVideoId(1L);
-
-        verify(persistence, times(1)).findByVideoId(anyLong());
-        assertEquals(List.of(CategoryFixture.newCategory()), result);
-
-    }
 }

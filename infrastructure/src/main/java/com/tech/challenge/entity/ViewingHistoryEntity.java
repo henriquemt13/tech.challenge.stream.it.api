@@ -31,4 +31,9 @@ public class ViewingHistoryEntity {
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    public ViewingHistoryEntity(Long userId, Long videoId) {
+        this.userId = userId;
+        this.videoId = videoId;
+    }
 }

@@ -14,8 +14,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    private CategoryPersistence persistence;
-    private UserCategoriesService userCategoriesService;
+    private final CategoryPersistence persistence;
+    private final UserCategoriesService userCategoriesService;
 
     @Override
     public void likeCategory(Long userId, Long categoryId) {
@@ -35,11 +35,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> findByIdIn(List<Long> ids) {
         return persistence.findByIdIn(ids);
-    }
-
-    @Override
-    public List<Category> findByVideoId(Long videoId) {
-        return persistence.findByVideoId(videoId);
     }
 
 }

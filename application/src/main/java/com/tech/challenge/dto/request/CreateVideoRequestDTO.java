@@ -12,5 +12,4 @@ public class CreateVideoRequestDTO {
     private List<Long> categoryIds;
     private String videoName;
     private String videoDescription;
-    private Long userId;
 }

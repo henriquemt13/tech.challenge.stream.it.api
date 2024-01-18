@@ -33,12 +33,12 @@ public class LikeEntity {
     @Column(name = "like_option", unique = true)
     @NotNull(message = "likeOption should not be null")
     @NotEmpty(message = "likeOption should not be empty")
-    private LikeOptionEnum likeOption;
+    private String likeOption;
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public LikeEntity(Long videoId, Long userId, LikeOptionEnum likeOption) {
+    public LikeEntity(Long videoId, Long userId, String likeOption) {
         this.videoId = videoId;
         this.userId = userId;
         this.likeOption = likeOption;

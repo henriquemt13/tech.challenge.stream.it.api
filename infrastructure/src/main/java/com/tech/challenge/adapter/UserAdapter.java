@@ -4,18 +4,17 @@ import com.tech.challenge.mapper.UserEntityMapper;
 import com.tech.challenge.model.User;
 import com.tech.challenge.persistence.UserPersistence;
 import com.tech.challenge.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserAdapter implements UserPersistence {
 
-    private UserRepository repository;
-    private UserEntityMapper mapper;
+    private final UserRepository repository;
+    private final UserEntityMapper mapper;
 
     @Override
     public User save(User user) {
@@ -24,11 +23,11 @@ public class UserAdapter implements UserPersistence {
 
     @Override
     public Optional<User> findById(Long id) {
-        return mapper.toDomain(repository.findById(id));
+        return repository.findById(id).map(mapper::toDomain);
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return mapper.toDomain(repository.findByUsername(username));
+        return repository.findByUsername(username).map(mapper::toDomain);
     }
 }

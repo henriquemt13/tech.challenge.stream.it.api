@@ -58,15 +58,4 @@ class UserCategoriesServiceTest {
 
     }
 
-    @Test
-    void findByUserIdAndLikeOptionShouldRunAsExpected() {
-
-        when(persistence.findByUserIdAndLikeOption(anyLong(), any()))
-                .thenReturn(List.of(UserCategoriesFixture.newUserCategoriesFixture()));
-
-        var result = service.findByUserIdAndLikeOption(1L, LikeOptionEnum.LIKE);
-
-        assertEquals(result, List.of(UserCategoriesFixture.newUserCategoriesFixture()));
-        verify(persistence, times(1)).findByUserIdAndLikeOption(anyLong(), any());
-    }
 }

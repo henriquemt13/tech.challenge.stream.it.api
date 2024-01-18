@@ -5,7 +5,7 @@ CREATE TABLE user_table (
     id                      BIGINT             NOT NULL PRIMARY KEY DEFAULT NEXTVAL(
     'user_table_seq'),
     username                VARCHAR(100)       NOT NULL UNIQUE,
-    created_at              timestamp          NOT NULL DEFAULT current_timestamp,
+    created_at              timestamp          NOT NULL DEFAULT current_timestamp
 );
 
 
@@ -16,7 +16,7 @@ CREATE TABLE category (
     id                      BIGINT             NOT NULL PRIMARY KEY DEFAULT NEXTVAL(
     'category_seq'),
     name                    VARCHAR(30)        NOT NULL UNIQUE,
-    created_at              timestamp          NOT NULL DEFAULT current_timestamp,
+    created_at              timestamp          NOT NULL DEFAULT current_timestamp
 );
 
 create
@@ -25,10 +25,11 @@ sequence video_seq;
 CREATE TABLE video (
     id                      BIGINT             NOT NULL PRIMARY KEY DEFAULT NEXTVAL(
     'video_seq'),
-    video_name              VARCHAR(50)        NOT NULL UNIQUE,
-    video_description       VARCHAR(150)       NOT NULL UNIQUE,
-    uploader_user_id        BIGINT             NOT NULL UNIQUE,
-    created_at              timestamp          NOT NULL DEFAULT current_timestamp,
+    video_name              VARCHAR(50)        NOT NULL,
+    video_description       VARCHAR(150)       NOT NULL,
+    video_path              VARCHAR(100)       NOT NULL UNIQUE,
+    uploader_user_id        BIGINT             NOT NULL,
+    created_at              timestamp          NOT NULL DEFAULT current_timestamp
 );
 
 
@@ -40,7 +41,7 @@ CREATE TABLE video_categories (
     'video_categories_seq'),
     video_id                BIGINT            NOT NULL,
     category_id             BIGINT             NOT NULL,
-    created_at              timestamp          NOT NULL DEFAULT current_timestamp,
+    created_at              timestamp          NOT NULL DEFAULT current_timestamp
 );
 
 
@@ -52,7 +53,7 @@ CREATE TABLE user_categories (
     'user_categories_seq'),
     user_id                 BIGINT             NOT NULL,
     category_id             BIGINT             NOT NULL,
-    created_at              timestamp          NOT NULL DEFAULT current_timestamp,
+    created_at              timestamp          NOT NULL DEFAULT current_timestamp
 );
 
 create
@@ -64,7 +65,7 @@ CREATE TABLE like_table (
     video_id                BIGINT             NOT NULL,
     user_id                 BIGINT             NOT NULL,
     like_option             VARCHAR(7),
-    created_at              timestamp          NOT NULL DEFAULT current_timestamp,
+    created_at              timestamp          NOT NULL DEFAULT current_timestamp
 );
 
 create
@@ -75,5 +76,5 @@ CREATE TABLE viewing_history (
     'viewing_history_seq'),
     user_id                 BIGINT            NOT NULL,
     video_id                BIGINT             NOT NULL,
-    created_at              timestamp          NOT NULL DEFAULT current_timestamp,
+    created_at              timestamp          NOT NULL DEFAULT current_timestamp
 );

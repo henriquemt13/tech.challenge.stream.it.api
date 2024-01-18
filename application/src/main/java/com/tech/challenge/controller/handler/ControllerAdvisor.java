@@ -3,6 +3,7 @@ package com.tech.challenge.controller.handler;
 import com.tech.challenge.dto.response.ErrorResponseDTO;
 import com.tech.challenge.exception.BadRequestException;
 import com.tech.challenge.exception.NotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,16 @@ public class ControllerAdvisor {
     @ExceptionHandler(MalformedURLException.class)
     public ResponseEntity<ErrorResponseDTO> handleMalformedURLException(
             MalformedURLException ex, WebRequest request) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponseDTO(
+                        ex.getMessage()));
+    }
+
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleConstraintViolationException(
+            ConstraintViolationException ex, WebRequest request) {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponseDTO(

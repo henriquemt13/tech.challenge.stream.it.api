@@ -10,4 +10,7 @@ import org.mapstruct.Mapper;
 public interface VideoMapper extends
         ResponseMapper<Video, VideoResponseDTO>,
         CreateRequestMapper<CreateVideoDTO, CreateVideoRequestDTO> {
+
+
+    CreateVideoDTO createRequestToDomain(CreateVideoRequestDTO createVideoRequestDTO, Long userId);
 }

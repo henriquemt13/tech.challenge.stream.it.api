@@ -5,15 +5,16 @@ import com.tech.challenge.exception.NotFoundException;
 import com.tech.challenge.model.User;
 import com.tech.challenge.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserUseCases {
 
-    private UserService userService;
+    private final UserService userService;
     public User findById(Long userId) {
         var user = userService.findById(userId);
         if (user.isEmpty()) {

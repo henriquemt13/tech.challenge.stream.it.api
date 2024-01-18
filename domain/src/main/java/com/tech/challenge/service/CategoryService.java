@@ -14,6 +14,4 @@ public interface CategoryService {
 
     List<Category> findByIdIn(List<Long> ids);
 
-    List<Category> findByVideoId(Long videoId);
-
 }

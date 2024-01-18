@@ -7,27 +7,28 @@ import com.tech.challenge.model.LikeOptionEnum;
 import com.tech.challenge.persistence.LikePersistence;
 import com.tech.challenge.repository.LikeRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LikeAdapter implements LikePersistence {
 
-    private LikeRepository repository;
-    private LikeEntityMapper mapper;
+    private final LikeRepository repository;
+    private final LikeEntityMapper mapper;
 
     @Override
     public void likeVideo(Long videoId, Long userId) {
-        LikeEntity like = new LikeEntity(videoId, userId, LikeOptionEnum.LIKE);
+        LikeEntity like = new LikeEntity(videoId, userId, LikeOptionEnum.LIKE.name());
         repository.save(like);
     }
 
     @Override
     public void dislikeVideo(Long videoId, Long userId) {
-        LikeEntity dislike = new LikeEntity(videoId, userId, LikeOptionEnum.DISLIKE);
+        LikeEntity dislike = new LikeEntity(videoId, userId, LikeOptionEnum.DISLIKE.name());
         repository.save(dislike);
     }
 
@@ -38,12 +39,12 @@ public class LikeAdapter implements LikePersistence {
 
     @Override
     public List<Like> findByUserIdAndLikeOption(Long userId, LikeOptionEnum likeOption) {
-        return repository.findByUserIdAndLikeOption(userId, likeOption);
+        return mapper.toDomain(repository.findByUserIdAndLikeOption(userId, likeOption.name()));
     }
 
     @Override
     public Optional<Like> findByUserIdAndVideoId(Long userId, Long videoId) {
-        return repository.findByUserIdAndVideoId(userId, videoId);
+        return repository.findByUserIdAndVideoId(userId, videoId).map(mapper::toDomain);
     }
 
     @Override

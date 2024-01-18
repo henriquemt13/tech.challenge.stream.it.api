@@ -1,10 +1,9 @@
 package com.tech.challenge.controller.v1;
 
 import com.tech.challenge.dto.request.CreateVideoRequestDTO;
-import com.tech.challenge.dto.response.UserResponseDTO;
-import com.tech.challenge.dto.response.VideoResponseDTO;
 import com.tech.challenge.mapper.VideoMapper;
 import com.tech.challenge.model.LikeOptionEnum;
+import com.tech.challenge.model.Video;
 import com.tech.challenge.usecase.UserUseCases;
 import com.tech.challenge.usecase.VideoUseCases;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,9 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +21,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -32,105 +30,104 @@ import java.net.MalformedURLException;
 @Tag(name = "Video")
 public class VideoController {
 
-    private VideoUseCases videoUseCases;
-    private UserUseCases userUseCases;
-    private VideoMapper videoMapper;
+    private final VideoUseCases videoUseCases;
+    private final UserUseCases userUseCases;
+    private final VideoMapper mapper;
 
     @GetMapping("/{id}")
     @ApiResponse(description = "Find Video Details By Id", responseCode = "200")
     @Operation(summary = "Find Video Details By Id")
-    public ResponseEntity<Mono<VideoResponseDTO>> findVideoDetailsById(@Valid @PathVariable Long videoId) {
+    public ResponseEntity<Video> findVideoDetailsById(@Valid @PathVariable("id") Long videoId) {
 
-        return ResponseEntity.ok(videoMapper.toResponse(videoUseCases.findDetailsById(videoId)));
+        return ResponseEntity.ok(videoUseCases.findDetailsById(videoId));
     }
 
-    @GetMapping(value = "/stream/{path}")
+    @GetMapping(value = "/stream/{id}/{path}", produces = "video/mp4")
     @ApiResponse(description = "Stream Video by its Path", responseCode = "200")
     @Operation(summary = "Stream Video")
-    public ResponseEntity<Mono<Resource>> streamVideo(@Valid @PathVariable String videoPath)
+    public ResponseEntity<Mono<Resource>> streamVideo(@Valid @PathVariable("path") String videoPath,
+                                                      @Valid @PathVariable("id") Long userId)
             throws MalformedURLException {
 
-        return ResponseEntity.ok(videoUseCases.streamVideo(videoPath));
+        return ResponseEntity.ok(videoUseCases.streamVideo(videoPath, userId));
 
     }
 
-    @GetMapping("/recommended/{userId}")
-    @ApiResponse(description = "Find Video Details By Id", responseCode = "200")
-    @Operation(summary = "Find Video Details By Id")
-    public ResponseEntity<Flux<VideoResponseDTO>> findRecommendedVideosByUserId(@Valid @PathVariable Long userId) {
+    @GetMapping("/recommended/{id}")
+    @ApiResponse(description = "Find Recommended Video By User Id", responseCode = "200")
+    @Operation(summary = "Find Recommended Video By User Id")
+    public ResponseEntity<List<Video>> findRecommendedVideosByUserId(@Valid @PathVariable("id") Long userId) {
         userUseCases.findById(userId);
-        return ResponseEntity.ok(videoMapper.toResponse(videoUseCases.findRecommendedVideos(userId)));
+        return ResponseEntity.ok(videoUseCases.findRecommendedVideos(userId));
     }
 
-    @GetMapping("/liked/{userId}")
-    @ApiResponse(description = "Find User Liked Videos By Id", responseCode = "200")
+    @GetMapping("/liked/{id}")
+    @ApiResponse(description = "Find Liked Videos By User Id", responseCode = "200")
     @Operation(summary = "Find User Liked Videos By Id")
-    public ResponseEntity<Flux<VideoResponseDTO>> findLikedVideosByUserId(@Valid @PathVariable Long userId) {
+    public ResponseEntity<List<Video>> findLikedVideosByUserId(@Valid @PathVariable("id") Long userId) {
         userUseCases.findById(userId);
-        return ResponseEntity.ok(videoMapper.toResponse(videoUseCases.findUserInteractedVideos(userId, LikeOptionEnum.LIKE)));
+        return ResponseEntity.ok(videoUseCases.findUserInteractedVideos(userId, LikeOptionEnum.LIKE));
     }
 
-    @GetMapping("/disliked/{userId}")
+    @GetMapping("/disliked/{id}")
     @ApiResponse(description = "Find User Disliked Videos By Id", responseCode = "200")
     @Operation(summary = "Find User Disliked Videos By Id")
-    public ResponseEntity<Flux<VideoResponseDTO>> findDislikedVideosByUserId(@Valid @PathVariable Long userId) {
+    public ResponseEntity<List<Video>> findDislikedVideosByUserId(@Valid @PathVariable("id") Long userId) {
         userUseCases.findById(userId);
-        return ResponseEntity.ok(videoMapper.toResponse(videoUseCases.findUserInteractedVideos(userId, LikeOptionEnum.DISLIKE)));
+        return ResponseEntity.ok(videoUseCases.findUserInteractedVideos(userId, LikeOptionEnum.DISLIKE));
     }
 
-    @GetMapping("/last-viewed/{userId}")
+    @GetMapping("/last-viewed/{id}")
     @ApiResponse(description = "Find User Last Viewed Videos by Its Id", responseCode = "200")
     @Operation(summary = "Find User Last Viewed Videos by User Id")
-    public ResponseEntity<Flux<VideoResponseDTO>> findUserLastViewedVideosByUserId(@Valid @PathVariable Long userId) {
+    public ResponseEntity<List<Video>> findUserLastViewedVideosByUserId(@Valid @PathVariable("id") Long userId) {
         userUseCases.findById(userId);
-        return ResponseEntity.ok(videoMapper.toResponse(videoUseCases.findLastViewedVideos(userId)));
+        return ResponseEntity.ok(videoUseCases.findLastViewedVideos(userId));
     }
 
-    @GetMapping("/like/{userId}/{videoId}")
+    @PostMapping("/like/{userId}/{videoId}")
     @ApiResponse(description = "Like video by User and Video Id", responseCode = "200")
     @Operation(summary = "Like video by User and Video Id")
-    public ResponseEntity<Flux<VideoResponseDTO>> likeVideo(@Valid @PathVariable Long userId,
-                                                            @Valid @PathVariable Long videoId) {
+    public ResponseEntity<List<Video>> likeVideo(@Valid @PathVariable("userId") Long userId,
+                                                            @Valid @PathVariable("videoId") Long videoId) {
         userUseCases.findById(userId);
         videoUseCases.likeVideo(videoId, userId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/dislike/{userId}/{videoId}")
+    @PostMapping("/dislike/{userId}/{videoId}")
     @ApiResponse(description = "Dislike video by User and Video Id", responseCode = "200")
     @Operation(summary = "Dislike video by User and Video Id")
-    public ResponseEntity<Flux<VideoResponseDTO>> dislikeVideo(@Valid @PathVariable Long userId,
-                                                               @Valid @PathVariable Long videoId) {
+    public ResponseEntity<Flux<Video>> dislikeVideo(@Valid @PathVariable("userId") Long userId,
+                                                               @Valid @PathVariable("videoId") Long videoId) {
         userUseCases.findById(userId);
         videoUseCases.dislikeVideo(videoId, userId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiResponse(description = "Upload video", responseCode = "200")
     @Operation(summary = "Upload video")
-    public ResponseEntity<Mono<VideoResponseDTO>> uploadVideo(@Valid @PathVariable Long userId,
-                                                              @Valid @ParameterObject CreateVideoRequestDTO requestDTO) throws IOException {
+    public ResponseEntity<Video> uploadVideo(@Valid @PathVariable("id") Long userId,
+                                                              @Valid @ModelAttribute CreateVideoRequestDTO requestDTO) throws IOException {
         userUseCases.findById(userId);
-        return ResponseEntity.ok(videoMapper
-                .toResponse(videoUseCases.uploadVideo(videoMapper.createRequestToDomain(requestDTO))));
+        return ResponseEntity.ok(videoUseCases.uploadVideo(mapper.createRequestToDomain(requestDTO, userId)));
     }
 
     @DeleteMapping("/{userId}/{videoId}")
     @ApiResponse(description = "Delete video", responseCode = "200")
     @Operation(summary = "Delete video")
-    public ResponseEntity<Mono<VideoResponseDTO>> deleteVideo(@Valid @PathVariable Long userId,
-                                                              @Valid @PathVariable Long videoId) {
+    public ResponseEntity<Void> deleteVideo(@Valid @PathVariable("userId") Long userId,
+                                                              @Valid @PathVariable("videoId") Long videoId) {
         userUseCases.findById(userId);
         videoUseCases.deleteVideo(videoId, userId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/search")
-    @ApiResponse(description = "Dislike video by User and Video Id", responseCode = "200")
-    @Operation(summary = "Dislike video by User and Video Id")
-    public ResponseEntity<Flux<VideoResponseDTO>> dislikeVideo(@Valid @RequestParam String videoName) {
-        return ResponseEntity.ok(videoMapper
-                .toResponse(videoUseCases.findByVideoNameLike(videoName)));
+    @ApiResponse(description = "Find by Video Name", responseCode = "200")
+    @Operation(summary = "Find by Video Name")
+    public ResponseEntity<List<Video>> findByVideoNameLike(@Valid @RequestParam String videoName) {
+        return ResponseEntity.ok(videoUseCases.findByVideoNameLike(videoName));
     }
 }

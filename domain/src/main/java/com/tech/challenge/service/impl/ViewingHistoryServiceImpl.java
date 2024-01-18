@@ -11,10 +11,15 @@ import java.util.List;
 @AllArgsConstructor
 public class ViewingHistoryServiceImpl implements ViewingHistoryService {
 
-    private ViewingHistoryPersistence persistence;
+    private final ViewingHistoryPersistence persistence;
 
     @Override
     public List<ViewingHistory> findByUserId(Long userId) {
         return persistence.findByUserId(userId);
+    }
+
+    @Override
+    public void addView(Long userId, Long videoId) {
+        persistence.save(userId, videoId);
     }
 }

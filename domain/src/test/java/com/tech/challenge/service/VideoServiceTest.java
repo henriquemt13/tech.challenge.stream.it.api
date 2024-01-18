@@ -59,7 +59,7 @@ class VideoServiceTest {
     }
 
     @Test
-    void deleteShouldThrowIOException() throws IOException {
+    void deleteShouldThrowBadRequestException() {
         when(persistence.findById(anyLong())).thenReturn(Mono.just(VideoFixture.newVideo()));
         Publisher<Video> existentVideo = service.findById(anyLong()).then(Mono.just(VideoFixture.newVideo()));
 

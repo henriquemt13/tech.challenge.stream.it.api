@@ -29,6 +29,10 @@ public class VideoEntity {
     private String videoName;
     @Column(name = "video_description", unique = true)
     private String videoDescription;
+    @Column(name = "video_path", unique = true)
+    @NotNull(message = "videoPath should not be null")
+    @NotEmpty(message = "videoPath should not be empty")
+    private String videoPath;
     @Column(name = "uploader_user_id", unique = true)
     @NotNull(message = "uploaderUserId should not be null")
     private Long uploaderUserId;

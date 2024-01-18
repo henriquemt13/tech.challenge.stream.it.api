@@ -4,20 +4,21 @@ import com.tech.challenge.mapper.VideoCategoriesEntityMapper;
 import com.tech.challenge.model.VideoCategories;
 import com.tech.challenge.persistence.VideoCategoriesPersistence;
 import com.tech.challenge.repository.VideoCategoriesRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class VideoCategoriesAdapter implements VideoCategoriesPersistence {
 
-    private VideoCategoriesRepository repository;
-    private VideoCategoriesEntityMapper mapper;
+    private final VideoCategoriesRepository repository;
+    private final VideoCategoriesEntityMapper mapper;
 
     @Override
-    public void save(Long videoId, List<Long> categoriesId) {
+    public void save(VideoCategories videoCategories) {
+        repository.save(mapper.toEntity(videoCategories));
     }
 
     @Override

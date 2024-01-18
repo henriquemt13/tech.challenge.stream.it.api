@@ -13,7 +13,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserPersistence persistence;
+    private final UserPersistence persistence;
 
     @Override
     public User save(User user) {

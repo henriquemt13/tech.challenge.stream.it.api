@@ -11,5 +11,4 @@ public interface UserCategoriesService {
 
     List<UserCategories> findByUserId(Long userId);
 
-    List<UserCategories> findByUserIdAndLikeOption(Long userId, LikeOptionEnum likeOptionEnum);
 }

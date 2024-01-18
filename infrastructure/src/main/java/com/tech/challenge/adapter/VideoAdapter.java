@@ -8,24 +8,23 @@ import com.tech.challenge.storage.VideoStorage;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @AllArgsConstructor
 public class VideoAdapter implements VideoPersistence {
 
-    private VideoRepository repository;
-    private VideoEntityMapper mapper;
-    private VideoStorage storage;
+    private final VideoRepository repository;
+    private final VideoEntityMapper mapper;
+    private final VideoStorage storage;
 
     @Override
-    public Mono<Video> save(Video video, MultipartFile videoFile) throws IOException {
-        var videoPath = storage.uploadVideo(video.getUploaderUserId(), videoFile);
-        videoPath.subscribe(video::setVideoPath);
+    public Video save(Video video, MultipartFile videoFile) throws IOException {
+        var videoPath = storage.uploadVideo(video, videoFile);
+        video.setVideoPath(videoPath);
         return mapper.toDomain(repository.save(mapper.toEntity(video)));
     }
 
@@ -36,22 +35,27 @@ public class VideoAdapter implements VideoPersistence {
     }
 
     @Override
-    public Mono<Video> findById(Long id) {
-        return mapper.toDomain(repository.findById(id));
+    public Optional<Video> findById(Long id) {
+        return repository.findById(id).map(mapper::toDomain);
     }
 
     @Override
-    public Flux<Video> findByIdIn(List<Long> ids) {
+    public List<Video> findByIdIn(List<Long> ids) {
         return mapper.toDomain(repository.findByIdIn(ids));
     }
 
     @Override
-    public Flux<Video> findByVideoNameLike(String name) {
+    public List<Video> findByVideoNameLike(String name) {
         return mapper.toDomain(repository.findByVideoNameLike(name));
     }
 
     @Override
-    public Flux<Video> findRecommendedVideosByUserId(Long userId) {
+    public List<Video> findRecommendedVideosByUserId(Long userId) {
         return mapper.toDomain(repository.findRecommendedVideosByUserId(userId));
+    }
+
+    @Override
+    public Optional<Video> findByVideoPath(String videoPath) {
+        return repository.findByVideoPath(videoPath).map(mapper::toDomain);
     }
 }

@@ -2,8 +2,10 @@ package com.tech.challenge.usecase;
 
 import com.tech.challenge.model.Category;
 import com.tech.challenge.model.UserCategories;
+import com.tech.challenge.model.VideoCategories;
 import com.tech.challenge.service.CategoryService;
 import com.tech.challenge.service.UserCategoriesService;
+import com.tech.challenge.service.VideoCategoriesService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryUseCases {
 
-    private UserUseCases userUseCases;
-    private UserCategoriesService userCategoriesService;
-    private CategoryService categoryService;
+    private final UserUseCases userUseCases;
+    private final UserCategoriesService userCategoriesService;
+    private final VideoCategoriesService videoCategoriesService;
+    private final CategoryService categoryService;
 
     public List<Category> findUserLikedCategories(Long userId) {
         userUseCases.findById(userId);
@@ -33,7 +36,8 @@ public class CategoryUseCases {
     }
 
     public List<Category> findByVideoId(Long videoId) {
-        return categoryService.findByVideoId(videoId);
+        var categoriesIds = videoCategoriesService.findByVideoId(videoId);
+        return categoryService.findByIdIn(categoriesIds.stream().map(VideoCategories::getCategoryId).toList());
     }
 
 }

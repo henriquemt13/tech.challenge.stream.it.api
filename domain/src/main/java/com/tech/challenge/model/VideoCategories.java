@@ -15,4 +15,9 @@ public class VideoCategories {
     private Long videoId;
     private Long categoryId;
     private LocalDateTime createdAt;
+
+    public VideoCategories(Long videoId, Long categoryId) {
+        this.videoId = videoId;
+        this.categoryId = categoryId;
+    }
 }

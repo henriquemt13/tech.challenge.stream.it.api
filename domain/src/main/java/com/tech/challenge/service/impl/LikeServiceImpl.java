@@ -15,7 +15,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class LikeServiceImpl implements LikeService {
 
-    private LikePersistence persistence;
+    private final LikePersistence persistence;
 
     @Override
     public void likeVideo(Long videoId, Long userId) {

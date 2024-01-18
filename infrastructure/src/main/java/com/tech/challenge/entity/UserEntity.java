@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "user_table")
 public class UserEntity {
 
     @Id
-    @SequenceGenerator(name = "user_seq",
-            sequenceName = "user_seq", allocationSize = 1)
-    @GeneratedValue(generator = "user_seq")
+    @SequenceGenerator(name = "user_table_seq",
+            sequenceName = "user_table_seq", allocationSize = 1)
+    @GeneratedValue(generator = "user_table_seq")
     @Column(name = "id", unique = true)
     private Long id;
     @Column(name = "username", unique = true)

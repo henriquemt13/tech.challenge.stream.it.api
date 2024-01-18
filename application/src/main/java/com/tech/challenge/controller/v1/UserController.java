@@ -17,8 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -26,14 +24,12 @@ import java.util.List;
 @Tag(name = "User")
 public class UserController {
 
-    private UserUseCases userUseCases;
-    private UserMapper userMapper;
-    private CategoryMapper categoryMapper;
-
+    private final UserUseCases userUseCases;
+    private final UserMapper userMapper;
     @GetMapping("/{id}")
     @ApiResponse(description = "Get User", responseCode = "200")
     @Operation(summary = "Get User by UserId")
-    public ResponseEntity<UserResponseDTO> findById(@Valid @PathVariable Long userId) {
+    public ResponseEntity<UserResponseDTO> findById(@Valid @PathVariable("id") Long userId) {
         return ResponseEntity.ok(userMapper.toResponse(userUseCases.findById(userId)));
     }
 
@@ -41,7 +37,7 @@ public class UserController {
     @PostMapping("")
     @ApiResponse(description = "Save User", responseCode = "200")
     @Operation(summary = "Save User")
-    public ResponseEntity<UserResponseDTO> save(@Valid @ParameterObject UserRequestDTO userRequestDTO) {
+    public ResponseEntity<UserResponseDTO> save(@Valid @RequestBody UserRequestDTO userRequestDTO) {
         return ResponseEntity.ok(userMapper.toResponse(userUseCases.saveUser(userMapper.createRequestToDomain(userRequestDTO))));
     }
 }
