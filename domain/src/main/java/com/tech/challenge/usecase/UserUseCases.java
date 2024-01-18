@@ -4,7 +4,6 @@ import com.tech.challenge.exception.BadRequestException;
 import com.tech.challenge.exception.NotFoundException;
 import com.tech.challenge.model.User;
 import com.tech.challenge.service.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

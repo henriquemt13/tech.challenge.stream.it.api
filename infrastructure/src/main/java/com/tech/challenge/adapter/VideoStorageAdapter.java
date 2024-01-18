@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Objects;
-import java.util.UUID;
 
 @Component
 public class VideoStorageAdapter implements VideoStorage {

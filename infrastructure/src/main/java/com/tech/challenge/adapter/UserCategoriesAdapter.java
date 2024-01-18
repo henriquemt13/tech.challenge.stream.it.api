@@ -1,11 +1,9 @@
 package com.tech.challenge.adapter;
 
 import com.tech.challenge.mapper.UserCategoriesEntityMapper;
-import com.tech.challenge.model.LikeOptionEnum;
 import com.tech.challenge.model.UserCategories;
 import com.tech.challenge.persistence.UserCategoriesPersistence;
 import com.tech.challenge.repository.UserCategoriesRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -2,7 +2,6 @@ package com.tech.challenge.repository;
 
 import com.tech.challenge.entity.ViewingHistoryEntity;
 import org.springframework.data.repository.CrudRepository;
-import reactor.core.publisher.Flux;
 
 import java.util.List;
 

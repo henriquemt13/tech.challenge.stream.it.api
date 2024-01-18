@@ -1,6 +1,5 @@
 package com.tech.challenge.entity;
 
-import com.tech.challenge.model.LikeOptionEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

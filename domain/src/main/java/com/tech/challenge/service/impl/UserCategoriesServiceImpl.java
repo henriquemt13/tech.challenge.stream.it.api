@@ -1,7 +1,6 @@
 package com.tech.challenge.service.impl;
 
 import com.tech.challenge.exception.BadRequestException;
-import com.tech.challenge.model.LikeOptionEnum;
 import com.tech.challenge.model.UserCategories;
 import com.tech.challenge.persistence.UserCategoriesPersistence;
 import com.tech.challenge.service.UserCategoriesService;

@@ -6,7 +6,6 @@ import com.tech.challenge.model.Like;
 import com.tech.challenge.model.LikeOptionEnum;
 import com.tech.challenge.persistence.LikePersistence;
 import com.tech.challenge.repository.LikeRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

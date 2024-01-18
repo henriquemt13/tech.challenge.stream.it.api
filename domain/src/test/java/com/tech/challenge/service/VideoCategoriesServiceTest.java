@@ -30,7 +30,7 @@ class VideoCategoriesServiceTest {
     @Test
     void saveShouldRunAsExpected() {
         when(service.findByVideoId(anyLong())).thenReturn(List.of());
-        doNothing().when(persistence).save(anyLong(), any());
+        doNothing().when(persistence).save(any());
 
         assertDoesNotThrow(() -> service.save(1L, List.of(1L)));
     }
