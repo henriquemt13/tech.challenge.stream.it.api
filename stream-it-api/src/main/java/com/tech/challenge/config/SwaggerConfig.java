@@ -15,14 +15,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .addServersItem(new Server().url(apiUrl))
                 .info(new Info()
-                        .title("CCEE Meter API")
-                        .description("""
-                                                          
-                          This API collects Meter Point information and updates and externalizes its measurements.
-                                                          
-                          To interact with this API, make sure to include the 'x-created-by' header in your requests to identify the creator of the request.
-                                                          
-                          """)
+                        .title("Stream IT API")
                         .version(appVersion));
     }
 }
