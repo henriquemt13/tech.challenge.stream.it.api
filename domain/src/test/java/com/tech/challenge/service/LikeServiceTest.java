@@ -123,7 +123,7 @@ class LikeServiceTest {
 
         var result = service.findTotalInteractions();
 
-        assertEquals(result,1L);
+        assertEquals(1L, result);
         verify(persistence, times(1)).totalInteractions();
     }
 
@@ -133,7 +133,7 @@ class LikeServiceTest {
 
         var result = service.findTotalLikes();
 
-        assertEquals(result,1L);
+        assertEquals(1L, result);
         verify(persistence, times(1)).totalLikes();
     }
 

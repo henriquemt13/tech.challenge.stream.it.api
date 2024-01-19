@@ -4,7 +4,6 @@ import com.tech.challenge.dto.SearchVideoDTO;
 import com.tech.challenge.entity.VideoEntity;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
-import com.tech.challenge.model.Video;
 
 import java.util.ArrayList;
 import java.util.Collection;
