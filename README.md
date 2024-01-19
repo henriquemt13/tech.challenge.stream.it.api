@@ -140,4 +140,4 @@ de sua finalização, então é possível que um ou outro endpoint esteja mínim
 de sua demonstração. Mas em sumo, o vídeo passa o conceito completo por trás da aplicação*
 
 
-*Nota 2: Ao subir a aplicação, é possível acessar seu Swagger, através deste link.*
+*Nota 2: Ao subir a aplicação, é possível acessar seu Swagger, através deste link:* http://localhost:8080/swagger-ui/index.html#/
