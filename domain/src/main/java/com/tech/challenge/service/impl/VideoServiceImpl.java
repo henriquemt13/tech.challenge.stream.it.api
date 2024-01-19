@@ -1,6 +1,8 @@
 package com.tech.challenge.service.impl;
 
 import com.tech.challenge.dto.CreateVideoDTO;
+import com.tech.challenge.dto.SearchResultDTO;
+import com.tech.challenge.dto.SearchVideoDTO;
 import com.tech.challenge.exception.BadRequestException;
 import com.tech.challenge.exception.NotFoundException;
 import com.tech.challenge.model.Video;
@@ -34,20 +36,19 @@ public class VideoServiceImpl implements VideoService {
         if (existentVideo.isEmpty()) {
             throw new NotFoundException(String.format("Video ID %d not found", id));
         }
-        try {
-                deleteVideo(existentVideo.get(), userId);
-            } catch (IOException e) {
-                throw new BadRequestException(String
-                        .format("There was an error while trying to delete Video ID %d", id));
-            }
+        deleteVideo(existentVideo.get(), userId);
     }
 
-    private void deleteVideo(Video video, Long userId) throws IOException {
-        if (Objects.equals(video.getUploaderUserId(), userId)) {
-            persistence.delete(video);
-        } else {
+    private void deleteVideo(Video video, Long userId) {
+        if (!Objects.equals(video.getUploaderUserId(), userId)) {
             throw new BadRequestException(String
                     .format("User ID %d is not the Video ID %d owner", userId, video.getId()));
+        }
+        try {
+            persistence.delete(video);
+        }  catch (IOException e) {
+            throw new BadRequestException(String
+                    .format("There was an error while trying to delete Video ID %d", video.getId()));
         }
     }
 
@@ -57,13 +58,13 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public List<Video> findByIdIn(List<Long> ids) {
-        return persistence.findByIdIn(ids);
+    public SearchResultDTO<Video> findByIdIn(List<Long> ids, SearchVideoDTO searchVideoDTO) {
+        return persistence.findByIdIn(ids, searchVideoDTO);
     }
 
     @Override
-    public List<Video> findByVideoNameLike(String name) {
-        return persistence.findByVideoNameLike(name);
+    public List<Video> findByIdIn(List<Long> ids) {
+        return persistence.findByIdIn(ids);
     }
 
     @Override
@@ -77,7 +78,12 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public List<Video> findAll() {
-        return persistence.findAll();
+    public SearchResultDTO<Video> findAll(SearchVideoDTO searchVideoDTO) {
+        return persistence.findAll(searchVideoDTO);
+    }
+
+    @Override
+    public Long findTotalVideos() {
+        return persistence.totalVideos();
     }
 }

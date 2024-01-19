@@ -117,4 +117,24 @@ class LikeServiceTest {
         verify(persistence, times(1)).findByUserIdAndLikeOption(anyLong(), any());
     }
 
+    @Test
+    void findTotalInteractionsShouldRunAsExpected() {
+        when(persistence.totalInteractions()).thenReturn(1L);
+
+        var result = service.findTotalInteractions();
+
+        assertEquals(1L, result);
+        verify(persistence, times(1)).totalInteractions();
+    }
+
+    @Test
+    void findTotalLikes() {
+        when(persistence.totalLikes()).thenReturn(1L);
+
+        var result = service.findTotalLikes();
+
+        assertEquals(1L, result);
+        verify(persistence, times(1)).totalLikes();
+    }
+
 }

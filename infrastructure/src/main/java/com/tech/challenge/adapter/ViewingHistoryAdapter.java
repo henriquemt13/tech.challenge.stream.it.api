@@ -26,4 +26,9 @@ public class ViewingHistoryAdapter implements ViewingHistoryPersistence {
     public void save(Long userId, Long videoId) {
         repository.save(new ViewingHistoryEntity(userId, videoId));
     }
+
+    @Override
+    public Long totalViews() {
+        return repository.count();
+    }
 }

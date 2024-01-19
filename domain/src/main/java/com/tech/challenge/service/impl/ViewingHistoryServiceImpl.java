@@ -22,4 +22,9 @@ public class ViewingHistoryServiceImpl implements ViewingHistoryService {
     public void addView(Long userId, Long videoId) {
         persistence.save(userId, videoId);
     }
+
+    @Override
+    public Long findTotalViews() {
+        return persistence.totalViews();
+    }
 }

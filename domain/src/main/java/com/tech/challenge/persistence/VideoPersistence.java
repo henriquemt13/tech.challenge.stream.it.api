@@ -1,5 +1,7 @@
 package com.tech.challenge.persistence;
 
+import com.tech.challenge.dto.SearchResultDTO;
+import com.tech.challenge.dto.SearchVideoDTO;
 import com.tech.challenge.model.Video;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,13 +17,15 @@ public interface VideoPersistence {
 
     Optional<Video> findById(Long id);
 
-    List<Video> findByIdIn(List<Long> ids);
+    SearchResultDTO<Video> findByIdIn(List<Long> ids, SearchVideoDTO searchVideoDTO);
 
-    List<Video> findByVideoNameLike(String name);
+    List<Video> findByIdIn(List<Long> ids);
 
     List<Video> findRecommendedVideosByUserId(Long userId);
 
     Optional<Video> findByVideoPath(String videoPath);
 
-    List<Video> findAll();
+    SearchResultDTO<Video> findAll(SearchVideoDTO searchVideoDTO);
+
+    Long totalVideos();
 }

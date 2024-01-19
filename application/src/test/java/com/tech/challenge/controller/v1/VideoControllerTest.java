@@ -3,8 +3,10 @@ package com.tech.challenge.controller.v1;
 import com.tech.challenge.config.TestConfig;
 import com.tech.challenge.dto.request.CreateVideoRequestDTO;
 import com.tech.challenge.fixture.CreateVideoRequestDTOFixture;
+import com.tech.challenge.fixture.MetricsResponseDTOFixture;
 import com.tech.challenge.fixture.UserFixture;
 import com.tech.challenge.fixture.VideoFixture;
+import com.tech.challenge.mapper.MetricsMapper;
 import com.tech.challenge.mapper.UserMapper;
 import com.tech.challenge.mapper.VideoMapper;
 import com.tech.challenge.model.Video;
@@ -61,10 +63,13 @@ class VideoControllerTest {
     @MockBean
     private VideoMapper mapper;
 
+    @MockBean
+    private MetricsMapper metricsMapper;
+
     @BeforeEach
     void setupMockMvc() {
         this.mvc = MockMvcBuilders
-                .standaloneSetup(new VideoController(videoUseCases, userUseCases, mapper))
+                .standaloneSetup(new VideoController(videoUseCases, userUseCases, mapper, metricsMapper))
                 .addFilter(((request, response, chain) -> {
                     response.setCharacterEncoding("UTF-8");
                     chain.doFilter(request, response);
@@ -72,15 +77,39 @@ class VideoControllerTest {
     }
 
     @Test
+    void findMetricsShouldRunAsExpected() throws Exception {
+        when(videoUseCases.findMetrics()).thenReturn(MetricsResponseDTOFixture.newMetricsDTO());
+        var result = mvc.perform(
+                get(PATH + "/metrics")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ).andExpect(status().isOk());
+
+        verify(videoUseCases, times(1)).findMetrics();
+
+    }
+
+    @Test
+    void findByCategoryIdShouldRunAsExpected() throws Exception {
+        when(videoUseCases.findByCategoryId(anyLong(), any()))
+                .thenReturn(VideoFixture.newVideoResult());
+        var result = mvc.perform(
+                get(PATH + "/category/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ).andExpect(status().isOk());
+
+        verify(videoUseCases, times(1)).findByCategoryId(anyLong(), any());
+    }
+
+    @Test
     void findAllShouldRunAsExpected() throws Exception {
-        when(videoUseCases.findAll()).thenReturn(List.of(VideoFixture.newVideo()));
+        when(videoUseCases.findAll(any())).thenReturn(VideoFixture.newVideoResult());
 
         var result = mvc.perform(
                 get(PATH)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
         ).andExpect(status().isOk());
 
-        verify(videoUseCases, times(1)).findAll();
+        verify(videoUseCases, times(1)).findAll(any());
     }
 
     @Test
@@ -237,18 +266,5 @@ class VideoControllerTest {
         ).andExpect(status().isOk());
 
         verify(videoUseCases, times(1)).deleteVideo(anyLong(), anyLong());
-    }
-
-    @Test
-    void findByVideoNameLike() throws Exception {
-        String nameLike = "test";
-        when(videoUseCases.findByVideoNameLike(anyString())).thenReturn(List.of(VideoFixture.newVideo()));
-
-        var result = mvc.perform(
-                get(PATH + "/search?videoName={name}", nameLike)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        ).andExpect(status().isOk());
-
-        verify(videoUseCases, times(1)).findByVideoNameLike(anyString());
     }
 }

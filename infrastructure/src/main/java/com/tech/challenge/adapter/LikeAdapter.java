@@ -50,4 +50,14 @@ public class LikeAdapter implements LikePersistence {
     public void delete(Like like) {
         repository.delete(mapper.toEntity(like));
     }
+
+    @Override
+    public Long totalInteractions() {
+        return repository.count();
+    }
+
+    @Override
+    public Long totalLikes() {
+        return repository.countByLikeOption(LikeOptionEnum.LIKE.name());
+    }
 }
