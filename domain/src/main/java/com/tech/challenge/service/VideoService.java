@@ -1,6 +1,8 @@
 package com.tech.challenge.service;
 
 import com.tech.challenge.dto.CreateVideoDTO;
+import com.tech.challenge.dto.SearchResultDTO;
+import com.tech.challenge.dto.SearchVideoDTO;
 import com.tech.challenge.model.Video;
 
 import java.io.IOException;
@@ -15,13 +17,15 @@ public interface VideoService {
 
     Optional<Video> findById(Long id);
 
-    List<Video> findByIdIn(List<Long> ids);
+    SearchResultDTO<Video> findByIdIn(List<Long> ids, SearchVideoDTO searchVideoDTO);
 
-    List<Video> findByVideoNameLike(String name);
+    List<Video> findByIdIn(List<Long> ids);
 
     Optional<Video> findByVideoPath(String videoPath);
 
     List<Video> findRecommendedVideosByUserId(Long userId);
 
-    List<Video> findAll();
+    SearchResultDTO<Video> findAll(SearchVideoDTO searchVideoDTO);
+
+    Long findTotalVideos();
 }

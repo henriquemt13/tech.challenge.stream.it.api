@@ -9,4 +9,6 @@ public interface ViewingHistoryPersistence {
     List<ViewingHistory> findByUserId(Long userId);
 
     void save(Long userid, Long videoId);
+
+    Long totalViews();
 }

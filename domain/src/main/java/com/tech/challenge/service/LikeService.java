@@ -20,4 +20,8 @@ public interface LikeService {
 
     void delete(Like like);
 
+    Long findTotalInteractions();
+
+    Long findTotalLikes();
+
 }

@@ -91,4 +91,14 @@ class CategoryUseCasesTest {
 
         assertEquals(categories, List.of(CategoryFixture.newCategory()));
     }
+
+
+    @Test
+    void findVideosIdsByCategoryId() {
+        when(videoCategoriesService.findByCategoryIdIn(any())).thenReturn(List.of(VideoCategoriesFixture.newVideoCategories()));
+
+        var response = useCases.findVideosIdsByCategoryId(1L);
+
+        assertEquals(response, List.of(1L));
+    }
 }

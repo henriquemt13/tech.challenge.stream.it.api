@@ -1,11 +1,16 @@
 package com.tech.challenge.adapter;
 
+import com.tech.challenge.specification.SearchVideoSpecification;
+import com.tech.challenge.dto.SearchResultDTO;
+import com.tech.challenge.dto.SearchVideoDTO;
 import com.tech.challenge.mapper.VideoEntityMapper;
 import com.tech.challenge.model.Video;
 import com.tech.challenge.persistence.VideoPersistence;
 import com.tech.challenge.repository.VideoRepository;
 import com.tech.challenge.storage.VideoStorage;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,13 +45,13 @@ public class VideoAdapter implements VideoPersistence {
     }
 
     @Override
-    public List<Video> findByIdIn(List<Long> ids) {
-        return mapper.toDomain(repository.findByIdIn(ids));
+    public SearchResultDTO<Video> findByIdIn(List<Long> ids, SearchVideoDTO searchVideoDTO) {
+        return mapper.toDomain(repository.findByIdIn(ids, PageRequest.of(searchVideoDTO.getPage(),
+                searchVideoDTO.getSize(), Sort.by("uploadDate").descending())));
     }
 
-    @Override
-    public List<Video> findByVideoNameLike(String name) {
-        return mapper.toDomain(repository.findByVideoNameLike(name));
+    public List<Video> findByIdIn(List<Long> ids) {
+        return repository.findByIdIn(ids);
     }
 
     @Override
@@ -60,7 +65,14 @@ public class VideoAdapter implements VideoPersistence {
     }
 
     @Override
-    public List<Video> findAll() {
-        return mapper.toDomain(repository.findAll());
+    public SearchResultDTO<Video> findAll(SearchVideoDTO searchVideoDTO) {
+        return mapper.toDomain(repository.findAll(SearchVideoSpecification.search(searchVideoDTO),
+                PageRequest.of(searchVideoDTO.getPage(), searchVideoDTO.getSize(), Sort.by("uploadDate")
+                        .descending())));
+    }
+
+    @Override
+    public Long totalVideos() {
+        return repository.count();
     }
 }
