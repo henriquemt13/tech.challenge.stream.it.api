@@ -134,8 +134,8 @@ Acredito que o interessante desse projeto, no final das contas, foi que da forma
 ele foi desnevolvido, ainda há um espaço muito amigável para novas implementações,
 melhorias e até mesmo correções.
 
-*Nota: é possível encontrar no vídeo de relatório do projeto neste mesmo repositório, 
-clicando aqui. O Vídeo, por sua vez, foi gravado durante os últimos ajustes de código, antes
+*Nota: é possível encontrar no vídeo de relatório do projeto neste mesmo repositório compactado em formato .zip. 
+O Vídeo, por sua vez, foi gravado durante os últimos ajustes de código, antes
 de sua finalização, então é possível que um ou outro endpoint esteja mínimamente diferente
 de sua demonstração. Mas em sumo, o vídeo passa o conceito completo por trás da aplicação*
 
