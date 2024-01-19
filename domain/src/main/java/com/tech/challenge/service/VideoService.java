@@ -23,4 +23,5 @@ public interface VideoService {
 
     List<Video> findRecommendedVideosByUserId(Long userId);
 
+    List<Video> findAll();
 }

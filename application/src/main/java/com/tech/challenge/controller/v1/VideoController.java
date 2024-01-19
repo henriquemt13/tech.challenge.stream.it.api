@@ -34,6 +34,14 @@ public class VideoController {
     private final UserUseCases userUseCases;
     private final VideoMapper mapper;
 
+    @GetMapping
+    @ApiResponse(description = "Find All Videos", responseCode = "200")
+    @Operation(summary = "Find All")
+    public ResponseEntity<List<Video>> findAll() {
+
+        return ResponseEntity.ok(videoUseCases.findAll());
+    }
+
     @GetMapping("/{id}")
     @ApiResponse(description = "Find Video Details By Id", responseCode = "200")
     @Operation(summary = "Find Video Details By Id")

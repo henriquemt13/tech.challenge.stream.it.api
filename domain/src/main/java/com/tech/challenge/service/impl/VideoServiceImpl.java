@@ -75,4 +75,9 @@ public class VideoServiceImpl implements VideoService {
     public List<Video> findRecommendedVideosByUserId(Long userId) {
         return persistence.findRecommendedVideosByUserId(userId);
     }
+
+    @Override
+    public List<Video> findAll() {
+        return persistence.findAll();
+    }
 }

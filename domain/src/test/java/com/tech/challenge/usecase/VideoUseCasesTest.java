@@ -26,6 +26,7 @@ import reactor.test.StepVerifier;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,91 +52,82 @@ class VideoUseCasesTest {
 
     @Mock
     private VideoStorage storage;
-//
-//    @Test
-//    void uploadVideoShouldRunAsExpected() throws IOException {
-//        var uploadResult = Mono.just(VideoFixture.newVideo());
-//        when(videoService.upload(any())).thenReturn(uploadResult);
-//
-//        var result = useCases.uploadVideo(new CreateVideoDTO());
-//
-//        assertEquals(result, uploadResult);
-//    }
-//
-//    @Test
-//    void streamVideoShouldRunAsExpected() throws MalformedURLException {
-//        when(storage.streamVideo(anyString())).thenReturn(Mono.empty());
-//        Publisher<Video> videoPublisher = useCases.streamVideo(anyString()).then(Mono.just(VideoFixture.newVideo()));
-//
-//        StepVerifier.create(videoPublisher).consumeNextWith(c ->
-//                assertEquals(c, videoPublisher));
-//    }
-//
-//    @Test
-//    void deleteVideoShouldRunAsExpected() {
-//        doNothing().when(videoService).delete(anyLong(), anyLong());
-//
-//        assertDoesNotThrow(() -> useCases.deleteVideo(1L, 1L));
-//    }
-//
-//    @Test
-//    void findByVideoNameLikeShouldRunAsExpected() {
-//        when(videoService.findByVideoNameLike(anyString())).thenReturn(Flux.empty());
-//        Publisher<Video> videoPublisher = useCases.findByVideoNameLike(anyString()).thenMany(Flux.just(VideoFixture.newVideo()));
-//
-//        StepVerifier.create(videoPublisher).consumeNextWith(c ->
-//                assertEquals(c, videoPublisher));
-//    }
-//
-//    @Test
-//    void likeVideoShouldRunAsExpected() {
-//        doNothing().when(likeService).likeVideo(anyLong(), anyLong());
-//
-//        assertDoesNotThrow(() -> useCases.likeVideo(1L, 1L));
-//    }
-//
-//    @Test
-//    void dislikeVideoShouldRunAsExpected() {
-//        doNothing().when(likeService).dislikeVideo(anyLong(), anyLong());
-//
-//        assertDoesNotThrow(() -> useCases.dislikeVideo(1L, 1L));
-//    }
-//
-//    @Test
-//    void findDetailsByIdShouldRunAsExpected() {
-//        when(videoService.findById(anyLong())).thenReturn(Mono.just(VideoFixture.newVideo()));
-//        Publisher<Video> videoPublisher = useCases.findDetailsById(anyLong()).then(Mono.just(VideoFixture.newVideo()));
-//
-//        StepVerifier.create(videoPublisher).consumeNextWith(c ->
-//                assertEquals(c, videoPublisher));
-//    }
-//
-//    @Test
-//    void findUserInteractedVideosShouldRunAsExpected() {
-//        when(likeService.findByUserIdAndLikeOption(anyLong(), any())).thenReturn(List.of(LikeFixture.newLike()));
-//        when(videoService.findByIdIn(any())).thenReturn(Flux.just(VideoFixture.newVideo()));
-//        Publisher<Video> videoPublisher = useCases.findUserInteractedVideos(anyLong(), any()).thenMany(Flux.just(VideoFixture.newVideo()));
-//
-//        StepVerifier.create(videoPublisher).consumeNextWith(c ->
-//                assertEquals(c, videoPublisher));
-//    }
-//
-//    @Test
-//    void findLastViewedVideosShouldRunAsExpected() {
-//        when(videoService.findByIdIn(any())).thenReturn(Flux.just(VideoFixture.newVideo()));
-//        Publisher<Video> videoPublisher = useCases.findLastViewedVideos(anyLong()).thenMany(Flux.just(VideoFixture.newVideo()));
-//
-//        StepVerifier.create(videoPublisher).consumeNextWith(c ->
-//                assertEquals(c, videoPublisher));
-//    }
-//
-//    @Test
-//    void findRecommendedVideosShouldRunAsExpected() {
-//        when(videoService.findRecommendedVideosByUserId(any())).thenReturn(Flux.just(VideoFixture.newVideo()));
-//        Publisher<Video> videoPublisher = useCases.findRecommendedVideos(anyLong()).then(Mono.just(VideoFixture.newVideo()));
-//
-//        StepVerifier.create(videoPublisher).consumeNextWith(c ->
-//                assertEquals(c, videoPublisher));
-//    }
+
+    @Test
+    void uploadVideoShouldRunAsExpected() throws IOException {
+        when(videoService.upload(any())).thenReturn(VideoFixture.newVideo());
+
+        var result = useCases.uploadVideo(new CreateVideoDTO());
+
+        assertEquals(result, VideoFixture.newVideo());
+    }
+
+    @Test
+    void deleteVideoShouldRunAsExpected() {
+        doNothing().when(videoService).delete(anyLong(), anyLong());
+
+        assertDoesNotThrow(() -> useCases.deleteVideo(1L, 1L));
+    }
+
+    @Test
+    void findByVideoNameLikeShouldRunAsExpected() {
+        when(videoService.findByVideoNameLike(anyString())).thenReturn(List.of(VideoFixture.newVideo()));
+
+        var result = useCases.findByVideoNameLike("test");
+
+        assertEquals(result, List.of(VideoFixture.newVideo()));
+    }
+
+    @Test
+    void likeVideoShouldRunAsExpected() {
+        doNothing().when(likeService).likeVideo(anyLong(), anyLong());
+
+        assertDoesNotThrow(() -> useCases.likeVideo(1L, 1L));
+    }
+
+    @Test
+    void dislikeVideoShouldRunAsExpected() {
+        doNothing().when(likeService).dislikeVideo(anyLong(), anyLong());
+
+        assertDoesNotThrow(() -> useCases.dislikeVideo(1L, 1L));
+    }
+
+    @Test
+    void findDetailsByIdShouldRunAsExpected() {
+        when(videoService.findById(anyLong())).thenReturn(Optional.of(VideoFixture.newVideo()));
+
+        var video = useCases.findDetailsById(1L);
+
+        assertEquals(video, VideoFixture.newVideo());
+    }
+
+    @Test
+    void findUserInteractedVideosShouldRunAsExpected() {
+        when(likeService.findByUserIdAndLikeOption(anyLong(), any())).thenReturn(List.of(LikeFixture.newLike()));
+        when(videoService.findByIdIn(any())).thenReturn(List.of(VideoFixture.newVideo()));
+
+        var result = useCases.findUserInteractedVideos(1L, LikeOptionEnum.LIKE);
+
+        assertEquals(result, List.of(VideoFixture.newVideo()));
+    }
+
+    @Test
+    void findLastViewedVideosShouldRunAsExpected() {
+        when(viewingHistoryService.findByUserId(anyLong())).thenReturn(List.of(ViewingHistoryFixture.newViewHistory()));
+        when(videoService.findByIdIn(any())).thenReturn(List.of(VideoFixture.newVideo()));
+
+        var result = useCases.findLastViewedVideos(1L);
+
+        assertEquals(result, List.of(VideoFixture.newVideo()));
+    }
+
+    @Test
+    void findRecommendedVideosShouldRunAsExpected() {
+        when(videoService.findRecommendedVideosByUserId(any())).thenReturn(List.of(VideoFixture.newVideo()));
+
+        var result = useCases.findRecommendedVideos(1L);
+
+        assertEquals(result, List.of(VideoFixture.newVideo()));
+    }
 
 }

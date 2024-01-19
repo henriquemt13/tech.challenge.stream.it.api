@@ -3,7 +3,9 @@ package com.tech.challenge.usecase;
 import com.tech.challenge.exception.BadRequestException;
 import com.tech.challenge.exception.NotFoundException;
 import com.tech.challenge.fixture.CategoryFixture;
+import com.tech.challenge.fixture.UserCategoriesFixture;
 import com.tech.challenge.fixture.UserFixture;
+import com.tech.challenge.fixture.VideoCategoriesFixture;
 import com.tech.challenge.model.Category;
 import com.tech.challenge.model.UserCategories;
 import com.tech.challenge.model.VideoCategories;
@@ -36,12 +38,16 @@ class CategoryUseCasesTest {
     private VideoCategoriesService videoCategoriesService;
 
     @Mock
+    private UserCategoriesService userCategoriesService;
+
+    @Mock
     private CategoryService categoryService;
 
 
     @Test
     void findUserLikedCategoriesShouldRunAsExpected() {
         when(userUseCases.findById(anyLong())).thenReturn(UserFixture.newUser());
+        when(userCategoriesService.findByUserId(anyLong())).thenReturn(List.of(UserCategoriesFixture.newUserCategoriesFixture()));
         when(categoryService.findByIdIn(any())).thenReturn(List.of(CategoryFixture.newCategory()));
 
         assertEquals(List.of(CategoryFixture.newCategory()), useCases.findUserLikedCategories(1L));
@@ -79,8 +85,8 @@ class CategoryUseCasesTest {
 
     @Test
     void findByVideoId() {
-        when(videoCategoriesService.findByVideoId(anyLong())).thenReturn(List.of(new VideoCategories()));
-
+        when(videoCategoriesService.findByVideoId(anyLong())).thenReturn(List.of(VideoCategoriesFixture.newVideoCategories()));
+        when(categoryService.findByIdIn(any())).thenReturn(List.of(CategoryFixture.newCategory()));
         var categories = useCases.findByVideoId(1L);
 
         assertEquals(categories, List.of(CategoryFixture.newCategory()));

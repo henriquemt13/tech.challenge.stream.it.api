@@ -19,6 +19,7 @@ import reactor.test.StepVerifier;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +41,7 @@ class VideoServiceTest {
 
     @Test
     void uploadShouldRunAsExpected() throws IOException {
-        var uploadResult = Mono.just(VideoFixture.newVideo());
+        var uploadResult = VideoFixture.newVideo();
         when(persistence.save(any(), any())).thenReturn(uploadResult);
 
         var result = service.upload(new CreateVideoDTO());
@@ -52,64 +53,67 @@ class VideoServiceTest {
 
     @Test
     void deleteShouldRunAsExpected() throws IOException {
-        when(service.findById(anyLong())).thenReturn(Mono.just(VideoFixture.newVideo()));
+        when(service.findById(anyLong())).thenReturn(Optional.of(VideoFixture.newVideo()));
         doNothing().when(persistence).delete(any());
 
         assertDoesNotThrow(() -> service.delete(1L, 1L));
     }
 
     @Test
-    void deleteShouldThrowBadRequestException() {
-        when(persistence.findById(anyLong())).thenReturn(Mono.just(VideoFixture.newVideo()));
-        Publisher<Video> existentVideo = service.findById(anyLong()).then(Mono.just(VideoFixture.newVideo()));
+    void deleteShouldThrowBadRequestException() throws IOException {
+        when(persistence.findById(anyLong())).thenReturn(Optional.of(VideoFixture.newVideo()));
+        doThrow(IOException.class).when(persistence).delete(any());
 
-        StepVerifier.create(existentVideo).consumeNextWith(c ->
-                assertThrows(BadRequestException.class, () -> service.delete(1L, 1L)));
+        assertThrows(BadRequestException.class, () -> service.delete(1L, 1L));
     }
 
     @Test
     void deleteShouldThrowNotFoundException() {
-        when(persistence.findById(anyLong())).thenReturn(Mono.empty());
-        Publisher<Video> existentVideo = service.findById(anyLong()).then(Mono.empty());
+        when(persistence.findById(anyLong())).thenReturn(Optional.empty());
 
-        StepVerifier.create(existentVideo).consumeNextWith(c ->
-                assertThrows(NotFoundException.class, () -> service.delete(1L, 1L)));
+
+        assertThrows(NotFoundException.class, () -> service.delete(1L, 1L));
     }
 
 
     @Test
-    void findById() {
-        when(persistence.findById(anyLong())).thenReturn(Mono.empty());
-        Publisher<Video> existentVideo = service.findById(anyLong()).then(Mono.just(VideoFixture.newVideo()));
+    void findByIdShouldRunAsExpected() {
+        when(persistence.findById(anyLong())).thenReturn(Optional.empty());
 
-        StepVerifier.create(existentVideo).consumeNextWith(c ->
-                assertEquals(c, existentVideo));
+        var result = service.findById(1L);
+
+        assertEquals(result, Optional.empty());
     }
 
     @Test
-    void findByIdIn() {
-        when(persistence.findByIdIn(any())).thenReturn(Flux.just(VideoFixture.newVideo()));
-        Publisher<Video> existentVideos = service.findByIdIn(any()).thenMany(Flux.just(VideoFixture.newVideo()));
+    void findByIdInShouldRUnAsExpected() {
+        when(persistence.findByIdIn(any())).thenReturn(List.of(VideoFixture.newVideo()));
+        var result = service.findByIdIn(List.of(1L));
 
-        StepVerifier.create(existentVideos).consumeNextWith(c ->
-                assertEquals(c, existentVideos));
+        assertEquals(result, List.of(VideoFixture.newVideo()));
     }
 
     @Test
-    void findByVideoNameLike() {
-        when(persistence.findByVideoNameLike(anyString())).thenReturn(Flux.just(VideoFixture.newVideo()));
-        Publisher<Video> existentVideos = service.findByVideoNameLike(anyString()).thenMany(Flux.just(VideoFixture.newVideo()));
+    void findByVideoNameLikeShouldRunAsExpected() {
+        when(persistence.findByVideoNameLike(any())).thenReturn(List.of(VideoFixture.newVideo()));
+        var result = service.findByVideoNameLike("test");
 
-        StepVerifier.create(existentVideos).consumeNextWith(c ->
-                assertEquals(c, existentVideos));
+        assertEquals(result, List.of(VideoFixture.newVideo()));
     }
 
     @Test
-    void findRecommendedVideosByUserId() {
-        when(persistence.findRecommendedVideosByUserId(anyLong())).thenReturn(Flux.just(VideoFixture.newVideo()));
-        Publisher<Video> existentVideos = service.findRecommendedVideosByUserId(anyLong()).thenMany(Flux.just(VideoFixture.newVideo()));
+    void findRecommendedVideosByUserIdShouldRunAsExpected() {
+        when(persistence.findRecommendedVideosByUserId(any())).thenReturn(List.of(VideoFixture.newVideo()));
+        var result = service.findRecommendedVideosByUserId(1L);
 
-        StepVerifier.create(existentVideos).consumeNextWith(c ->
-                assertEquals(c, existentVideos));
+        assertEquals(result, List.of(VideoFixture.newVideo()));
+    }
+
+    @Test
+    void findByVideoPath() {
+        when(persistence.findByVideoPath(any())).thenReturn(Optional.of(VideoFixture.newVideo()));
+        var result = service.findByVideoPath("url/test");
+
+        assertEquals(result, Optional.of(VideoFixture.newVideo()));
     }
 }

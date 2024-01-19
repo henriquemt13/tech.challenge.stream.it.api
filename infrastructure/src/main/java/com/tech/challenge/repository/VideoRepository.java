@@ -1,13 +1,14 @@
 package com.tech.challenge.repository;
 
 import com.tech.challenge.entity.VideoEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface VideoRepository extends CrudRepository<VideoEntity, Long> {
+public interface VideoRepository extends JpaRepository<VideoEntity, Long> {
 
     List<VideoEntity> findByIdIn(List<Long> ids);
 

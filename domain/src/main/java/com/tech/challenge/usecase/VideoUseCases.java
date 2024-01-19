@@ -28,6 +28,9 @@ public class VideoUseCases {
     private final ViewingHistoryService viewingHistoryService;
     private final VideoStorage storage;
 
+    public List<Video> findAll() {
+        return videoService.findAll();
+    }
     public Video uploadVideo(CreateVideoDTO createVideoDTO) throws IOException {
         return videoService.upload(createVideoDTO);
     }

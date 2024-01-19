@@ -22,4 +22,6 @@ public interface VideoPersistence {
     List<Video> findRecommendedVideosByUserId(Long userId);
 
     Optional<Video> findByVideoPath(String videoPath);
+
+    List<Video> findAll();
 }

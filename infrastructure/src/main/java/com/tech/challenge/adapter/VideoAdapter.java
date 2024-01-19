@@ -58,4 +58,9 @@ public class VideoAdapter implements VideoPersistence {
     public Optional<Video> findByVideoPath(String videoPath) {
         return repository.findByVideoPath(videoPath).map(mapper::toDomain);
     }
+
+    @Override
+    public List<Video> findAll() {
+        return mapper.toDomain(repository.findAll());
+    }
 }
