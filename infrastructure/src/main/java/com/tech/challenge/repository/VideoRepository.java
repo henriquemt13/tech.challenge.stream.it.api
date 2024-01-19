@@ -17,7 +17,7 @@ public interface VideoRepository extends PagingAndSortingRepository<VideoEntity,
 
     Page<VideoEntity> findByIdIn(List<Long> ids, PageRequest pageRequest);
 
-    List<Video> findByIdIn(List<Long> ids);
+    List<VideoEntity> findByIdIn(List<Long> ids);
 
     @Query(value = "SELECT DISTINCT v.* " +
             "FROM video v  " +
