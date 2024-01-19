@@ -51,7 +51,7 @@ public class VideoAdapter implements VideoPersistence {
     }
 
     public List<Video> findByIdIn(List<Long> ids) {
-        return repository.findByIdIn(ids);
+        return mapper.toDomain(repository.findByIdIn(ids));
     }
 
     @Override
