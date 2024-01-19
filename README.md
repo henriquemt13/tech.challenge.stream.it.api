@@ -5,11 +5,11 @@ Tech Challenge FIAP Fase 4 - Stream It
 ## Relatório Técnico
 
 ---
-- Introdução - Desenvolvimento, Arquitetura e Entidades
-- Bibliotecas em Destaque
-- Testes Unitários
-- Plugins da IDE
-- Minhas Percepções
+- [Introdução - Desenvolvimento, Arquitetura e Entidades](#introdução---desenvolvimento-arquitetura-e-entidades)
+- [Bibliotecas em Destaque](#bibliotecas-em-destaque)
+- [Testes Unitários](#testes-unitários)
+- [Plugins da IDE](#plugins-da-ide)
+- [Minhas Percepções](#minhas-percepções)
 
 ### Introdução - Desenvolvimento, Arquitetura e Entidades
 
