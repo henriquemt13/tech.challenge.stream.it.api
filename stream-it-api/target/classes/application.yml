@@ -1,0 +1,52 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  application:
+    name: steam-it-api
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        show_sql: ${SPRING_JPA_SHOW_SQL:false}
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: 1
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://${DB_SERVER:localhost}:${DB_PORT:5432}/${POSTGRES_DB:postgres}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:password}
+    hikari:
+      schema: ${DB_SCHEMA:stream-it}
+
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    schemas: ${DB_SCHEMA:stream-it}
+    baselineOnMigrate: ${FLYWAY_BASELINE_ON_MIGRATE:true}
+    out-of-order: ${FLYWAY_OUT_OF_ORDER:false}
+  jackson:
+    default-property-inclusion: NON_NULL
+
+springdoc:
+  show-actuator: true
+  version: 1.0
+  api-docs:
+    path: /v3/api-docs
+    enabled: ${SWAGGER_DOC_ENABLED:true}
+  swagger-ui:
+    path: ${SWAGGER_UI_PATH:/swagger-ui.html}
+    disable-swagger-default-url: true
+    enabled: ${SWAGGER_UI_ENABLED:true}
+    operationsSorter: alpha
+    tagsSorter: alpha
+    configUrl: ${SWAGGER_CONFIG_URL:/v3/api-docs/swagger-config}
+    url: ${SWAGGER_URL:/v3/api-docs}
+
+swagger:
+  apiUrl: ${SWAGGER_API_URL:http://localhost:8080}
