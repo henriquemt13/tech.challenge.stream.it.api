@@ -65,7 +65,6 @@ class UserControllerTest {
     @Test
     void saveShouldRunAsExpected() throws Exception {
         when(userUseCases.saveUser(any())).thenReturn(UserFixture.newUser());
-
         var result = mvc.perform(
                 post(PATH)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)

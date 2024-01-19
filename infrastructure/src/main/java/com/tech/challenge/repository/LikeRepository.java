@@ -1,7 +1,6 @@
 package com.tech.challenge.repository;
 
 import com.tech.challenge.entity.LikeEntity;
-import com.tech.challenge.model.LikeOptionEnum;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
