@@ -6,13 +6,13 @@ import com.tech.challenge.model.VideoCategories;
 import com.tech.challenge.service.CategoryService;
 import com.tech.challenge.service.UserCategoriesService;
 import com.tech.challenge.service.VideoCategoriesService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CategoryUseCases {
 
     private final UserUseCases userUseCases;

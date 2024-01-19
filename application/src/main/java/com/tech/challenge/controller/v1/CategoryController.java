@@ -29,29 +29,31 @@ public class CategoryController {
     @ApiResponse(description = "Find All Categories", responseCode = "200")
     @Operation(summary = "Find All")
     public ResponseEntity<List<CategoryResponseDTO>> findAll() {
+        log.info("Searching for all Categories");
         return ResponseEntity.ok(mapper.toResponse(categoryUseCases.findAll()));
     }
 
     @GetMapping("/video/{id}")
     @ApiResponse(description = "Find Categories By VideoId", responseCode = "200")
-    @Operation(summary = "Find All")
+    @Operation(summary = "Find By VideoId")
     public ResponseEntity<List<CategoryResponseDTO>> findByVideoId(@Valid @PathVariable("id") Long videoId) {
         return ResponseEntity.ok(mapper.toResponse(categoryUseCases.findByVideoId(videoId)));
     }
 
     @GetMapping("/user/{id}/like-categories")
     @ApiResponse(description = "Find Liked Categories by User Id", responseCode = "200")
-    @Operation(summary = "Get User by UserId")
+    @Operation(summary = "Find Liked Categories by User Id")
     public ResponseEntity<List<CategoryResponseDTO>> findLikedCategories(@Valid @PathVariable("id") Long userId) {
         return ResponseEntity.ok(mapper.toResponse(categoryUseCases.findUserLikedCategories(userId)));
     }
 
     @PostMapping("/user/{id}/like-categories")
-    @ApiResponse(description = "Save User", responseCode = "200")
-    @Operation(summary = "Get User by UserId")
+    @ApiResponse(description = "Like Categories", responseCode = "200")
+    @Operation(summary = "Like Categories")
     public ResponseEntity<Void> likeCategories(@Valid @PathVariable("id") Long userId,
-                                               @Valid @RequestBody List<Long> categoriesIds) {
-        categoryUseCases.likeCategories(userId, categoriesIds);
+                                               @Valid @RequestParam List<Long> categoryId) {
+        log.info("Categories Ids {} requested to be liked by User ID {}", categoryId, userId);
+        categoryUseCases.likeCategories(userId, categoryId);
         return ResponseEntity.ok().build();
     }
 }

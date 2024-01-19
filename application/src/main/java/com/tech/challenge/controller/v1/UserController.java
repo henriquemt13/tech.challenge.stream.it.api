@@ -23,6 +23,7 @@ public class UserController {
 
     private final UserUseCases userUseCases;
     private final UserMapper userMapper;
+
     @GetMapping("/{id}")
     @ApiResponse(description = "Get User", responseCode = "200")
     @Operation(summary = "Get User by UserId")

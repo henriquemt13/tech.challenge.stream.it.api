@@ -1,6 +1,7 @@
 package com.tech.challenge.usecase;
 
 import com.tech.challenge.dto.CreateVideoDTO;
+import com.tech.challenge.exception.NotFoundException;
 import com.tech.challenge.fixture.LikeFixture;
 import com.tech.challenge.fixture.VideoFixture;
 import com.tech.challenge.fixture.ViewingHistoryFixture;
@@ -18,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivestreams.Publisher;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -128,6 +130,36 @@ class VideoUseCasesTest {
         var result = useCases.findRecommendedVideos(1L);
 
         assertEquals(result, List.of(VideoFixture.newVideo()));
+    }
+
+
+    @Test
+    void streamVideoShouldReturnResource() throws MalformedURLException {
+        String videoPath = "test";
+        Long userId = 1L;
+        byte[] videoContent = "test".getBytes();
+        Resource mockResource = new ByteArrayResource(videoContent);
+
+        when(videoService.findByVideoPath(videoPath)).thenReturn(Optional.of(VideoFixture.newVideo()));
+        when(storage.streamVideo(videoPath)).thenReturn(Mono.just(mockResource));
+
+        Mono<Resource> result = useCases.streamVideo(videoPath, userId);
+
+        assertDoesNotThrow(() -> result.block());
+        assertEquals(mockResource, result.block());
+
+        verify(viewingHistoryService, times(1)).addView(anyLong(), anyLong());
+        verify(videoService, times(1)).findByVideoPath(videoPath);
+        verify(storage, times(1)).streamVideo(videoPath);
+    }
+
+    @Test
+    void streamVideoShouldTHrowNotFoundException() {
+        String videoPath = "test";
+        when(videoService.findByVideoPath(any())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> useCases.streamVideo(videoPath, 1L));
+        verify(videoService, times(1)).findByVideoPath(videoPath);
     }
 
 }
