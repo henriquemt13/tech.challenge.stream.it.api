@@ -50,7 +50,7 @@ class ViewingHistoryServiceTest {
 
         var result = service.findTotalViews();
 
-        assertEquals(result, 1L);
+        assertEquals(1L, result);
 
     }
 }

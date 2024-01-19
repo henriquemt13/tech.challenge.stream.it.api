@@ -136,6 +136,6 @@ class VideoServiceTest {
 
         var result = service.findTotalVideos();
 
-        assertEquals(result, 1L);
+        assertEquals(1L, result);
     }
 }
