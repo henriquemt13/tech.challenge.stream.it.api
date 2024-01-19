@@ -1,10 +1,10 @@
 package com.tech.challenge.service;
 
 import com.tech.challenge.dto.CreateVideoDTO;
+import com.tech.challenge.dto.SearchVideoDTO;
 import com.tech.challenge.exception.BadRequestException;
 import com.tech.challenge.exception.NotFoundException;
 import com.tech.challenge.fixture.VideoFixture;
-import com.tech.challenge.model.Video;
 import com.tech.challenge.persistence.VideoPersistence;
 import com.tech.challenge.service.impl.VideoServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -12,18 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -68,6 +62,15 @@ class VideoServiceTest {
     }
 
     @Test
+    void deleteShouldThrowBadRequestExceptionByDifferentIds() {
+        var video = VideoFixture.newVideo();
+        video.setUploaderUserId(2L);
+        when(persistence.findById(anyLong())).thenReturn(Optional.of(video));
+
+        assertThrows(BadRequestException.class, () -> service.delete(1L, 1L));
+    }
+
+    @Test
     void deleteShouldThrowNotFoundException() {
         when(persistence.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -94,14 +97,6 @@ class VideoServiceTest {
     }
 
     @Test
-    void findByVideoNameLikeShouldRunAsExpected() {
-        when(persistence.findByVideoNameLike(any())).thenReturn(List.of(VideoFixture.newVideo()));
-        var result = service.findByVideoNameLike("test");
-
-        assertEquals(result, List.of(VideoFixture.newVideo()));
-    }
-
-    @Test
     void findRecommendedVideosByUserIdShouldRunAsExpected() {
         when(persistence.findRecommendedVideosByUserId(any())).thenReturn(List.of(VideoFixture.newVideo()));
         var result = service.findRecommendedVideosByUserId(1L);
@@ -115,5 +110,32 @@ class VideoServiceTest {
         var result = service.findByVideoPath("url/test");
 
         assertEquals(result, Optional.of(VideoFixture.newVideo()));
+    }
+
+    @Test
+    void findAllShouldRunAsExpected() {
+        when(persistence.findAll(any())).thenReturn(VideoFixture.newVideoResult());
+
+        var result = service.findAll(new SearchVideoDTO());
+
+        assertEquals(result, VideoFixture.newVideoResult());
+    }
+
+    @Test
+    void findByIdInShouldRunAsExpected() {
+        when(persistence.findByIdIn(any(), any())).thenReturn(VideoFixture.newVideoResult());
+
+        var result = service.findByIdIn(List.of(1L), new SearchVideoDTO());
+
+        assertEquals(result, VideoFixture.newVideoResult());
+    }
+
+    @Test
+    void findTotalVideosShouldRunAsExpected() {
+        when(persistence.totalVideos()).thenReturn(1L);
+
+        var result = service.findTotalVideos();
+
+        assertEquals(result, 1L);
     }
 }

@@ -40,4 +40,10 @@ public class CategoryUseCases {
         return categoryService.findByIdIn(categoriesIds.stream().map(VideoCategories::getCategoryId).toList());
     }
 
+    public List<Long> findVideosIdsByCategoryId(Long categoryId) {
+        var videocategories = videoCategoriesService.findByCategoryIdIn(List.of(categoryId));
+
+        return videocategories.stream().map(VideoCategories::getVideoId).toList();
+    }
+
 }

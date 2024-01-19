@@ -1,7 +1,12 @@
 package com.tech.challenge.mapper;
 
 import com.tech.challenge.dto.CreateVideoDTO;
+import com.tech.challenge.dto.SearchResultDTO;
+import com.tech.challenge.dto.SearchVideoDTO;
 import com.tech.challenge.dto.request.CreateVideoRequestDTO;
+import com.tech.challenge.dto.request.SearchVideoRequestDTO;
+import com.tech.challenge.dto.response.PageResponseDTO;
+import com.tech.challenge.dto.response.SearchResultResponseDTO;
 import com.tech.challenge.dto.response.VideoResponseDTO;
 import com.tech.challenge.model.Video;
 import java.time.LocalDateTime;
@@ -12,29 +17,26 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-18T21:56:36-0300",
+    date = "2024-01-19T13:19:49-0300",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 @Component
 public class VideoMapperImpl implements VideoMapper {
 
     @Override
-    public CreateVideoDTO createRequestToDomain(CreateVideoRequestDTO addDto) {
+    public SearchVideoDTO createRequestToDomain(SearchVideoRequestDTO addDto) {
         if ( addDto == null ) {
             return null;
         }
 
-        CreateVideoDTO createVideoDTO = new CreateVideoDTO();
+        SearchVideoDTO searchVideoDTO = new SearchVideoDTO();
 
-        createVideoDTO.setVideo( addDto.getVideo() );
-        List<Long> list = addDto.getCategoryIds();
-        if ( list != null ) {
-            createVideoDTO.setCategoryIds( new ArrayList<Long>( list ) );
-        }
-        createVideoDTO.setVideoName( addDto.getVideoName() );
-        createVideoDTO.setVideoDescription( addDto.getVideoDescription() );
+        searchVideoDTO.setVideoName( addDto.getVideoName() );
+        searchVideoDTO.setUploadDate( addDto.getUploadDate() );
+        searchVideoDTO.setPage( addDto.getPage() );
+        searchVideoDTO.setSize( addDto.getSize() );
 
-        return createVideoDTO;
+        return searchVideoDTO;
     }
 
     @Override
@@ -74,6 +76,36 @@ public class VideoMapperImpl implements VideoMapper {
         }
 
         return list;
+    }
+
+    @Override
+    public SearchResultResponseDTO<VideoResponseDTO> toResponse(SearchResultDTO<Video> pageResponse) {
+        if ( pageResponse == null ) {
+            return null;
+        }
+
+        SearchResultResponseDTO<VideoResponseDTO> searchResultResponseDTO = new SearchResultResponseDTO<VideoResponseDTO>();
+
+        searchResultResponseDTO.setPaging( toResponsePage( pageResponse ) );
+        searchResultResponseDTO.setResponse( toResponse( pageResponse.getResponse() ) );
+
+        return searchResultResponseDTO;
+    }
+
+    @Override
+    public PageResponseDTO toResponsePage(SearchResultDTO<Video> pageResponse) {
+        if ( pageResponse == null ) {
+            return null;
+        }
+
+        PageResponseDTO.PageResponseDTOBuilder pageResponseDTO = PageResponseDTO.builder();
+
+        pageResponseDTO.totalPages( pageResponse.getTotalPages() );
+        pageResponseDTO.totalElements( pageResponse.getTotalElements() );
+        pageResponseDTO.page( pageResponse.getPage() );
+        pageResponseDTO.elementsPerPage( pageResponse.getElementsPerPage() );
+
+        return pageResponseDTO.build();
     }
 
     @Override

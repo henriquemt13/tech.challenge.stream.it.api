@@ -1,6 +1,9 @@
 package com.tech.challenge.usecase;
 
 import com.tech.challenge.dto.CreateVideoDTO;
+import com.tech.challenge.dto.MetricsDTO;
+import com.tech.challenge.dto.SearchResultDTO;
+import com.tech.challenge.dto.SearchVideoDTO;
 import com.tech.challenge.exception.NotFoundException;
 import com.tech.challenge.fixture.LikeFixture;
 import com.tech.challenge.fixture.VideoFixture;
@@ -53,6 +56,9 @@ class VideoUseCasesTest {
     private ViewingHistoryService viewingHistoryService;
 
     @Mock
+    private CategoryUseCases categoryUseCases;
+
+    @Mock
     private VideoStorage storage;
 
     @Test
@@ -69,15 +75,6 @@ class VideoUseCasesTest {
         doNothing().when(videoService).delete(anyLong(), anyLong());
 
         assertDoesNotThrow(() -> useCases.deleteVideo(1L, 1L));
-    }
-
-    @Test
-    void findByVideoNameLikeShouldRunAsExpected() {
-        when(videoService.findByVideoNameLike(anyString())).thenReturn(List.of(VideoFixture.newVideo()));
-
-        var result = useCases.findByVideoNameLike("test");
-
-        assertEquals(result, List.of(VideoFixture.newVideo()));
     }
 
     @Test
@@ -101,6 +98,13 @@ class VideoUseCasesTest {
         var video = useCases.findDetailsById(1L);
 
         assertEquals(video, VideoFixture.newVideo());
+    }
+
+    @Test
+    void findDetailsByIdShouldThrowNotFoundException() {
+        when(videoService.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> useCases.findDetailsById(1L));
     }
 
     @Test
@@ -160,6 +164,46 @@ class VideoUseCasesTest {
 
         assertThrows(NotFoundException.class, () -> useCases.streamVideo(videoPath, 1L));
         verify(videoService, times(1)).findByVideoPath(videoPath);
+    }
+
+
+    @Test
+    void findByCategoryIdShouldRunAsExpected() {
+        when(categoryUseCases.findVideosIdsByCategoryId(anyLong())).thenReturn(List.of(1L));
+        when(videoService.findByIdIn(any(), any())).thenReturn(VideoFixture.newVideoResult());
+
+        var result = useCases.findByCategoryId(1L, new SearchVideoDTO());
+
+        assertEquals(result, VideoFixture.newVideoResult());
+        verify(categoryUseCases, times(1)).findVideosIdsByCategoryId(anyLong());
+        verify(videoService, times(1)).findByIdIn(any(), any());
+
+    }
+
+    @Test
+    void findMetricsShouldRunAsExpected() {
+        when(videoService.findTotalVideos()).thenReturn(1L);
+        when(likeService.findTotalLikes()).thenReturn(1L);
+        when(likeService.findTotalInteractions()).thenReturn(1L);
+        when(viewingHistoryService.findTotalViews()).thenReturn(1L);
+
+        var result = useCases.findMetrics();
+
+        assertEquals(result, new MetricsDTO(1L, 1L, 1L, 1L));
+        verify(videoService, times(1)).findTotalVideos();
+        verify(likeService, times(1)).findTotalLikes();
+        verify(likeService, times(1)).findTotalInteractions();
+        verify(viewingHistoryService, times(1)).findTotalViews();
+    }
+
+    @Test
+    void findAllShouldRunAsExpected() {
+        when(videoService.findAll(any())).thenReturn(VideoFixture.newVideoResult());
+
+        var result = useCases.findAll(new SearchVideoDTO());
+
+        assertEquals(result, VideoFixture.newVideoResult());
+        verify(videoService, times(1)).findAll(any());
     }
 
 }

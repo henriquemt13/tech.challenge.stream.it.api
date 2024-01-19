@@ -1,6 +1,9 @@
 package com.tech.challenge.usecase;
 
 import com.tech.challenge.dto.CreateVideoDTO;
+import com.tech.challenge.dto.MetricsDTO;
+import com.tech.challenge.dto.SearchResultDTO;
+import com.tech.challenge.dto.SearchVideoDTO;
 import com.tech.challenge.exception.NotFoundException;
 import com.tech.challenge.model.Like;
 import com.tech.challenge.model.LikeOptionEnum;
@@ -27,9 +30,24 @@ public class VideoUseCases {
     private final VideoService videoService;
     private final ViewingHistoryService viewingHistoryService;
     private final VideoStorage storage;
+    private final CategoryUseCases categoryUseCases;
 
-    public List<Video> findAll() {
-        return videoService.findAll();
+    public SearchResultDTO<Video> findByCategoryId(Long categoryId, SearchVideoDTO searchVideoDTO) {
+        return videoService.findByIdIn(categoryUseCases.findVideosIdsByCategoryId(categoryId), searchVideoDTO);
+    }
+
+    public MetricsDTO findMetrics() {
+        MetricsDTO metricsDTO = new MetricsDTO();
+        metricsDTO.setTotalVideos(videoService.findTotalVideos());
+        metricsDTO.setTotalLikes(likeService.findTotalLikes());
+        metricsDTO.setTotalInteractions(likeService.findTotalInteractions());
+        metricsDTO.setTotalViews(viewingHistoryService.findTotalViews());
+
+        return metricsDTO;
+    }
+
+    public SearchResultDTO<Video> findAll(SearchVideoDTO searchVideoDTO) {
+        return videoService.findAll(searchVideoDTO);
     }
     public Video uploadVideo(CreateVideoDTO createVideoDTO) throws IOException {
         return videoService.upload(createVideoDTO);
@@ -46,10 +64,6 @@ public class VideoUseCases {
 
     public void deleteVideo(Long videoId, Long userId) {
         videoService.delete(videoId, userId);
-    }
-
-    public List<Video> findByVideoNameLike(String videoName) {
-        return videoService.findByVideoNameLike(videoName);
     }
 
     public void likeVideo(Long videoId, Long userId) {

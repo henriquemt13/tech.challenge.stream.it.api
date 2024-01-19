@@ -19,4 +19,8 @@ public interface LikePersistence {
     Optional<Like> findByUserIdAndVideoId(Long userId, Long videoId);
 
     void delete(Like like);
+
+    Long totalInteractions();
+
+    Long totalLikes();
 }

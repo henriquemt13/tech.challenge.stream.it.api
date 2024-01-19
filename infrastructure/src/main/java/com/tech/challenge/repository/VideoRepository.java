@@ -1,17 +1,23 @@
 package com.tech.challenge.repository;
 
 import com.tech.challenge.entity.VideoEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.tech.challenge.model.Video;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface VideoRepository extends JpaRepository<VideoEntity, Long> {
+public interface VideoRepository extends PagingAndSortingRepository<VideoEntity, Long>,
+        CrudRepository<VideoEntity, Long>, JpaSpecificationExecutor<VideoEntity> {
 
-    List<VideoEntity> findByIdIn(List<Long> ids);
+    Page<VideoEntity> findByIdIn(List<Long> ids, PageRequest pageRequest);
 
-    List<VideoEntity> findByVideoNameLike(String name);
+    List<Video> findByIdIn(List<Long> ids);
 
     @Query(value = "SELECT DISTINCT v.* " +
             "FROM video v  " +

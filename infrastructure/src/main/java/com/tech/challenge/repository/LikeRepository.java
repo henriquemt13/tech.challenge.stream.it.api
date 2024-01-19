@@ -13,4 +13,6 @@ public interface LikeRepository extends CrudRepository<LikeEntity, Long> {
     List<LikeEntity> findByUserIdAndLikeOption(Long userId, String likeOption);
 
     Optional<LikeEntity> findByUserIdAndVideoId(Long userId, Long videoId);
+
+    Long countByLikeOption(String likeOption);
 }

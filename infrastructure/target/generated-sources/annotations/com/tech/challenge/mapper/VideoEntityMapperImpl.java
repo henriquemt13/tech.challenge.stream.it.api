@@ -1,15 +1,17 @@
 package com.tech.challenge.mapper;
 
+import com.tech.challenge.dto.SearchResultDTO;
 import com.tech.challenge.entity.VideoEntity;
 import com.tech.challenge.model.Video;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-18T21:54:36-0300",
+    date = "2024-01-19T13:14:22-0300",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17 (Oracle Corporation)"
 )
 @Component
@@ -77,6 +79,23 @@ public class VideoEntityMapperImpl implements VideoEntityMapper {
         }
 
         return list;
+    }
+
+    @Override
+    public SearchResultDTO<Video> toDomain(Page<VideoEntity> page) {
+        if ( page == null ) {
+            return null;
+        }
+
+        SearchResultDTO<Video> searchResultDTO = new SearchResultDTO<Video>();
+
+        searchResultDTO.setTotalPages( page.getTotalPages() );
+        searchResultDTO.setTotalElements( page.getTotalElements() );
+        searchResultDTO.setPage( getNumber( page ) );
+        searchResultDTO.setElementsPerPage( getNumberOfElements( page ) );
+        searchResultDTO.setResponse( getContent( page ) );
+
+        return searchResultDTO;
     }
 
     @Override

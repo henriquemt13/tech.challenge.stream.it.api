@@ -58,4 +58,14 @@ public class LikeServiceImpl implements LikeService {
     public void delete(Like like) {
         persistence.delete(like);
     }
+
+    @Override
+    public Long findTotalInteractions() {
+        return persistence.totalInteractions();
+    }
+
+    @Override
+    public Long findTotalLikes() {
+        return persistence.totalLikes();
+    }
 }
